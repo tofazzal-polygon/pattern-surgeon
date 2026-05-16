@@ -1,0 +1,1 @@
+{ "name": "observer-pos", "private": true, "scripts": { "test": "node test.js" }, "devDependencies": { "typescript": "5" } }

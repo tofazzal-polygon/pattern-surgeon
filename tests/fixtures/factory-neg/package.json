@@ -1,0 +1,1 @@
+{ "name": "factory-neg", "private": true, "scripts": { "test": "node test.js" }, "devDependencies": { "typescript": "5" } }
