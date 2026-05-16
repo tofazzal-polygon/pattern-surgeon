@@ -16,3 +16,14 @@ teardown() { rm -rf "$TMP"; }
   [ "$(cat f.txt)" = "bad" ]
   [[ "$output" == *"REJECTED DIFF"* ]]
 }
+
+@test "rollback preserves unrelated pre-existing user stashes" {
+  git stash push -q -m "user-work" f.txt 2>/dev/null || { echo nochange > g.txt; git add g.txt; git stash push -q -m "user-work"; }
+  before="$(git stash list | grep -c user-work)"
+  [ "$before" -eq 1 ]
+  echo worse > f.txt
+  run bash "$SCRIPT" "$SHA"
+  [ "$status" -eq 0 ]
+  after="$(git stash list | grep -c user-work || true)"
+  [ "$after" -eq 1 ]
+}
