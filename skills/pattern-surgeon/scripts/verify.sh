@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# Extensibility: to add another language, add a branch that sets the typecheck and test commands; the exit-code contract (0 ok / 2 typecheck / 3 tests / 4 no test script) and SKILL.md detection rules stay unchanged.
 
 if   [ -f pnpm-lock.yaml ]; then PM=pnpm
 elif [ -f yarn.lock ];      then PM=yarn
