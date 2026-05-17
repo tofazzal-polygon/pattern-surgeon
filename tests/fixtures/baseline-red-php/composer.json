@@ -1,0 +1,11 @@
+{
+    "name": "fixture/baseline-red-php",
+    "description": "Pattern-surgeon baseline-red fixture: composer project with NO phpunit and NO artisan, plus a real PHP parse error. Router => no test runner => exit 4.",
+    "type": "project",
+    "require": {
+        "php": "^8.2"
+    },
+    "autoload": {
+        "files": ["src.php"]
+    }
+}

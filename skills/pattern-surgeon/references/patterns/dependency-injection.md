@@ -140,7 +140,41 @@ sealed class OrderService {
 // var svc = new OrderService(new FakeDb(), new FixedClock(new DateTime(2026, 1, 1)));
 ```
 ```php
-// TODO(phase-4): php example
+declare(strict_types=1);
+
+// BEFORE: hidden, untestable collaborators
+// final class OrderService {
+//     private Db $db;
+//     public function __construct() {
+//         $this->db = new Db(getenv('DB_URL'));   // hidden, untestable
+//     }
+// }
+
+// AFTER: collaborators lifted to constructor params, typed by interfaces
+interface Db {
+    public function insert(array $order): void;
+}
+
+interface Clock {
+    public function now(): \DateTimeImmutable;
+}
+
+final class OrderService {
+    public function __construct(private Db $db, private Clock $clock) {}
+
+    public function place(array $order): void {
+        $order['at'] = $this->clock->now();
+        $this->db->insert($order);
+    }
+}
+
+// composition root: wire the real implementations
+// $svc = new OrderService(new RealDb(getenv('DB_URL')), new SystemClock());
+
+// Laravel: type-hint Db/Clock in the constructor and the service container
+// auto-resolves them (bind the interfaces in a ServiceProvider).
+// test: a test double can be injected via the same constructor
+// $svc = new OrderService(new FakeDb(), new FixedClock(new \DateTimeImmutable('2026-01-01')));
 ```
 
 ## Framework idiom

@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+/*
+ * Fixture stub of the Laravel `artisan` console entrypoint.
+ *
+ * The real Laravel artisan bootstraps the framework kernel and cannot run
+ * offline without the full vendor/ tree. Its presence here is what the
+ * pattern-surgeon verify.sh marker router keys off of: composer.json + an
+ * `artisan` file => detected stack=composer, TEST="php artisan test".
+ *
+ * Because a full Laravel runtime is unavailable offline, this fixture's role
+ * is DETECTION + STATIC E2E only: the verify router must select the Laravel
+ * test command, and the PHPUnit test under tests/ statically exercises the
+ * Repository smell in src.php. It is intentionally NOT a runnable app.
+ */
+
+fwrite(STDERR, "artisan stub: full Laravel runtime unavailable offline\n");
+exit(1);

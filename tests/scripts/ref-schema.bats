@@ -11,3 +11,7 @@ ROOT="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/references/patterns"
     grep -qF '## Framework idiom' "$f" || { echo "MISSING Framework idiom in $f"; false; }
   done
 }
+
+@test "no language stub remains in any pattern ref" {
+  ! grep -rq 'TODO(phase-' "$ROOT"
+}

@@ -122,7 +122,32 @@ static class ConnFactory {
 // IConn conn = ConnFactory.Create(cfg.Driver, cfg.Url);
 ```
 ```php
-// TODO(phase-4): php example
+declare(strict_types=1);
+
+interface Conn { public function kind(): string; }
+
+final class PgConn implements Conn {
+    public function __construct(private string $url) {}
+    public function kind(): string { return 'pg'; }
+}
+
+final class MySQLConn implements Conn {
+    public function __construct(private string $url) {}
+    public function kind(): string { return 'mysql'; }
+}
+
+final class ConnFactory {
+    public static function create(string $driver, string $url): Conn {
+        return match ($driver) {
+            'pg' => new PgConn($url),
+            'mysql' => new MySQLConn($url),
+            default => throw new \InvalidArgumentException("unknown driver $driver"),
+        };
+    }
+}
+
+// callers:
+// $conn = ConnFactory::create($cfg['driver'], $cfg['url']);
 ```
 
 ## Framework idiom

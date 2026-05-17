@@ -1,0 +1,11 @@
+{
+    "name": "fixture/php-strategy-pos",
+    "description": "Pattern-surgeon fixture: Strategy smell (>=3-branch pricing conditional duplicated).",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "^10"
+    },
+    "autoload": {
+        "files": ["src.php"]
+    }
+}

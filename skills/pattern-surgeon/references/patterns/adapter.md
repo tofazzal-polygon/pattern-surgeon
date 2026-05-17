@@ -93,7 +93,30 @@ sealed class StripeAdapter : IPaymentPort {
 // IPaymentPort payments = new StripeAdapter();
 ```
 ```php
-// TODO(phase-4): php example
+declare(strict_types=1);
+
+// domain terms: dollars in, returns vendor charge equivalent (cents charged)
+interface PaymentPort {
+    public function charge(float $dollars, string $currency): int;
+}
+
+final class VendorApi {
+    // fake 3rd-party vendor API: works in integer cents + uppercase code
+    public static function vendorCharge(int $cents, string $currency): int {
+        return $cents;
+    }
+}
+
+final class StripeAdapter implements PaymentPort {
+    public function charge(float $dollars, string $currency): int {
+        // convert domain shape -> vendor shape inside the adapter only
+        $cents = (int) round($dollars * 100);
+        return VendorApi::vendorCharge($cents, strtoupper($currency));
+    }
+}
+
+// callers depend on PaymentPort; adapter wired at the composition root:
+// $payments = new StripeAdapter();
 ```
 
 ## Framework idiom

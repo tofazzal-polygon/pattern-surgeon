@@ -138,7 +138,45 @@ sealed class Order {
 // off(); // unsubscribe handle kept and called to avoid listener leaks
 ```
 ```php
-// TODO(phase-4): php example
+declare(strict_types=1);
+
+final class Subject {
+    /** @var array<int,callable> */
+    private array $ls = [];
+    private int $next = 0;
+
+    public function subscribe(callable $l): callable {
+        $id = $this->next++;
+        $this->ls[$id] = $l;
+        // return an unsubscribe handle
+        return function () use ($id): void {
+            unset($this->ls[$id]);
+        };
+    }
+
+    public function notify(mixed $e): void {
+        foreach ($this->ls as $l) {
+            $l($e);
+        }
+    }
+}
+
+final class Order {
+    public string $status = 'open';
+
+    public function __construct(private Subject $orderCompleted) {}
+
+    public function complete(): void {
+        $this->status = 'done';
+        $this->orderCompleted->notify($this);   // producer no longer imports consumers
+    }
+}
+
+// producer emits a domain event instead of calling consumers:
+// $orderCompleted = new Subject();
+// $off = $orderCompleted->subscribe(fn ($o) => $emailService->send($o));
+// $orderCompleted->subscribe(fn ($o) => $analytics->track($o));
+// $off(); // unsubscribe handle kept and called to avoid listener leaks
 ```
 
 ## Framework idiom

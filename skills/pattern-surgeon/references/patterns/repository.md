@@ -132,7 +132,45 @@ sealed class UserService {
 }
 ```
 ```php
-// TODO(phase-4): php example
+declare(strict_types=1);
+
+final class User {
+    public function __construct(public string $id, public string $status) {}
+}
+
+interface UserRepository {
+    public function findById(string $id): ?User;
+    public function save(User $u): void;
+}
+
+final class InMemoryUserRepository implements UserRepository {
+    /** @var array<string,User> */
+    private array $store = [];
+
+    public function findById(string $id): ?User {
+        return $this->store[$id] ?? null;
+    }
+
+    public function save(User $u): void {
+        $this->store[$u->id] = new User($u->id, $u->status);
+    }
+}
+
+final class UserService {
+    // service holds only rules; depends on the interface, not the store
+    public function __construct(private UserRepository $users) {}
+
+    public function activate(string $id): void {
+        $u = $this->users->findById($id);
+        if ($u === null) {
+            throw new \RuntimeException('not found');
+        }
+        if ($u->status === 'banned') {
+            throw new \RuntimeException('banned');
+        }
+        $this->users->save(new User($u->id, 'active'));
+    }
+}
 ```
 
 ## Framework idiom

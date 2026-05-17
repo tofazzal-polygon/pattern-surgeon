@@ -104,7 +104,39 @@ static class Pricing {
 }
 ```
 ```php
-// TODO(phase-4): php example
+declare(strict_types=1);
+
+interface PricingStrategy { public function price(float $base): float; }
+
+final class Regular implements PricingStrategy {
+    public function price(float $b): float { return $b; }
+}
+
+final class Vip implements PricingStrategy {
+    public function price(float $b): float { return $b * 0.8; }
+}
+
+final class Staff implements PricingStrategy {
+    public function price(float $b): float { return $b * 0.5; }
+}
+
+final class Pricing {
+    /** @var array<string,PricingStrategy> */
+    private array $s;
+
+    public function __construct() {
+        $this->s = [
+            'regular' => new Regular(),
+            'vip' => new Vip(),
+            'staff' => new Staff(),
+        ];
+    }
+
+    public function price(string $kind, float $base): float {
+        // default/unknown branch preserved: unknown $kind raises a warning/Error
+        return $this->s[$kind]->price($base);
+    }
+}
 ```
 
 ## Framework idiom
