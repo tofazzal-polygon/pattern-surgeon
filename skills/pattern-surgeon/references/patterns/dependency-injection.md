@@ -98,7 +98,46 @@ final class OrderService {
 // var svc = new OrderService(new FakeDb(), () -> Instant.parse("2026-01-01T00:00:00Z"));
 ```
 ```csharp
-// TODO(phase-3): csharp example
+using System;
+using System.Collections.Generic;
+
+// BEFORE: hidden, untestable collaborators
+// sealed class OrderService {
+//     private readonly Db _db = new Db(Environment.GetEnvironmentVariable("DB_URL")); // hidden
+//     private readonly Func<DateTime> _clock = () => DateTime.UtcNow;                  // global
+// }
+
+// AFTER: collaborators lifted to constructor params, typed by interfaces
+interface IDb {
+    void Insert(Dictionary<string, object> order);
+}
+
+interface IClock {
+    DateTime Now();
+}
+
+sealed class OrderService {
+    private readonly IDb _db;
+    private readonly IClock _clock;
+
+    public OrderService(IDb db, IClock clock) {
+        _db = db;
+        _clock = clock;
+    }
+
+    public void Place(Dictionary<string, object> order) {
+        order["at"] = _clock.Now();
+        _db.Insert(order);
+    }
+}
+
+// composition root: register against interfaces, constructor-inject
+// services.AddSingleton<IDb, Db>();
+// services.AddSingleton<IClock, SystemClock>();
+// services.AddScoped<OrderService>();
+
+// test: a test double can be injected via the same constructor
+// var svc = new OrderService(new FakeDb(), new FixedClock(new DateTime(2026, 1, 1)));
 ```
 ```php
 // TODO(phase-4): php example

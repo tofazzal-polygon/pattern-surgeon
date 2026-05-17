@@ -86,7 +86,22 @@ final class Pricing {
 }
 ```
 ```csharp
-// TODO(phase-3): csharp example
+using System.Collections.Generic;
+
+interface IPricingStrategy { double Price(double b); }
+
+sealed class Regular : IPricingStrategy { public double Price(double b) => b; }
+sealed class Vip : IPricingStrategy { public double Price(double b) => b * 0.8; }
+sealed class Staff : IPricingStrategy { public double Price(double b) => b * 0.5; }
+
+static class Pricing {
+    static readonly Dictionary<string, IPricingStrategy> S = new() {
+        ["regular"] = new Regular(), ["vip"] = new Vip(), ["staff"] = new Staff()
+    };
+
+    // default/unknown branch preserved: missing key -> KeyNotFoundException
+    public static double Price(string kind, double b) => S[kind].Price(b);
+}
 ```
 ```php
 // TODO(phase-4): php example

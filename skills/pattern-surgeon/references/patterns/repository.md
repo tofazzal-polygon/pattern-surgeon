@@ -99,7 +99,37 @@ final class UserService {
 }
 ```
 ```csharp
-// TODO(phase-3): csharp example
+using System;
+using System.Collections.Generic;
+
+record User(string Id, string Status);
+
+interface IUserRepository {
+    User? FindById(string id);
+    void Save(User u);
+}
+
+sealed class InMemoryUserRepository : IUserRepository {
+    private readonly Dictionary<string, User> _store = new();
+
+    public User? FindById(string id) =>
+        _store.TryGetValue(id, out var u) ? u : null;
+
+    public void Save(User u) => _store[u.Id] = u;
+}
+
+sealed class UserService {
+    private readonly IUserRepository _users;
+
+    // service holds only rules; depends on the interface, not the store
+    public UserService(IUserRepository users) { _users = users; }
+
+    public void Activate(string id) {
+        var u = _users.FindById(id) ?? throw new InvalidOperationException("not found");
+        if (u.Status == "banned") throw new InvalidOperationException("banned");
+        _users.Save(u with { Status = "active" });
+    }
+}
 ```
 ```php
 // TODO(phase-4): php example

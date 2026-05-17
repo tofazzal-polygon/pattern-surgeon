@@ -94,7 +94,32 @@ final class ConnFactory {
 // Conn conn = ConnFactory.create(cfg.driver(), cfg.url());
 ```
 ```csharp
-// TODO(phase-3): csharp example
+using System;
+
+interface IConn { string Kind { get; } }
+
+sealed class MySqlConn : IConn {
+    private readonly string _url;
+    public MySqlConn(string url) { _url = url; }
+    public string Kind => "mysql";
+}
+
+sealed class PgConn : IConn {
+    private readonly string _url;
+    public PgConn(string url) { _url = url; }
+    public string Kind => "pg";
+}
+
+static class ConnFactory {
+    public static IConn Create(string driver, string url) => driver switch {
+        "pg" => new PgConn(url),
+        "mysql" => new MySqlConn(url),
+        _ => throw new ArgumentException($"unknown driver {driver}"),
+    };
+}
+
+// callers:
+// IConn conn = ConnFactory.Create(cfg.Driver, cfg.Url);
 ```
 ```php
 // TODO(phase-4): php example

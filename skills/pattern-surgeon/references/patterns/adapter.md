@@ -69,7 +69,28 @@ final class StripeAdapter implements PaymentPort {
 // PaymentPort payments = new StripeAdapter();
 ```
 ```csharp
-// TODO(phase-3): csharp example
+using System;
+
+// domain terms: dollars in, returns vendor charge equivalent (cents charged)
+interface IPaymentPort {
+    int Charge(double dollars, string currency);
+}
+
+static class VendorApi {
+    // fake 3rd-party vendor API: works in integer cents + uppercase code
+    public static int VendorCharge(int cents, string currency) => cents;
+}
+
+sealed class StripeAdapter : IPaymentPort {
+    public int Charge(double dollars, string currency) {
+        // convert domain shape -> vendor shape inside the adapter only
+        int cents = (int)Math.Round(dollars * 100);
+        return VendorApi.VendorCharge(cents, currency.ToUpperInvariant());
+    }
+}
+
+// callers depend on IPaymentPort; adapter wired at the composition root:
+// IPaymentPort payments = new StripeAdapter();
 ```
 ```php
 // TODO(phase-4): php example

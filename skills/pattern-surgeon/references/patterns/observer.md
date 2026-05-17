@@ -101,7 +101,41 @@ final class Order {
 // off.run(); // unsubscribe handle kept and called to avoid listener leaks
 ```
 ```csharp
-// TODO(phase-3): csharp example
+using System;
+using System.Collections.Generic;
+
+sealed class Subject<E> {
+    private readonly List<Action<E>> _ls = new();
+
+    public Action Subscribe(Action<E> l) {
+        _ls.Add(l);
+        return () => _ls.Remove(l);
+    }
+
+    public void Notify(E e) {
+        foreach (var l in new List<Action<E>>(_ls)) l(e);
+    }
+}
+
+sealed class Order {
+    public string Status = "open";
+    private readonly Subject<Order> _orderCompleted;
+
+    public Order(Subject<Order> orderCompleted) {
+        _orderCompleted = orderCompleted;
+    }
+
+    public void Complete() {
+        Status = "done";
+        _orderCompleted.Notify(this);   // producer no longer imports consumers
+    }
+}
+
+// producer emits a domain event instead of calling consumers:
+// var orderCompleted = new Subject<Order>();
+// Action off = orderCompleted.Subscribe(o => emailService.Send(o));
+// orderCompleted.Subscribe(o => analytics.Track(o));
+// off(); // unsubscribe handle kept and called to avoid listener leaks
 ```
 ```php
 // TODO(phase-4): php example

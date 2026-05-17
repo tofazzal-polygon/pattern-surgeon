@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Intentionally a plain Exe with a compile error and NO test project.
+         verify.sh dotnet branch -> `dotnet build` FAILS (router exit 2). Even
+         if it built there is no test target (-> exit 4). Either way the
+         non-zero exit proves the safety harness refuses to operate on a red
+         baseline and the skill must recommend-only. -->
+  </PropertyGroup>
+
+</Project>

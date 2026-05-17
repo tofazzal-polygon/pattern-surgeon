@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <!-- xUnit test project: `dotnet test` (verify.sh dotnet branch) discovers
+         and runs the [Fact] below. xunit 2.4.2 / Microsoft.NET.Test.Sdk 17.8.0
+         are pinned to versions present in the local NuGet cache so restore
+         succeeds offline. If the toolchain/cache is unavailable, the same
+         assertions are reproduced by SelfTest.Run() (see SelfTest.cs) which
+         is the documented offline/gated validation path. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
+  </ItemGroup>
+
+</Project>
