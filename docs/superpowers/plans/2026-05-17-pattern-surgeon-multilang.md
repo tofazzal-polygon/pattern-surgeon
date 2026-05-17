@@ -166,11 +166,15 @@ git commit -m "feat(pattern-surgeon): verify.sh marker router (ts/python/maven/g
 
 ```bash
 # tests/scripts/ref-schema.bats
+# NOTE: a literal triple-backtick inside a bats 1.13 test body breaks bats's
+# source preprocessor and makes it collect 0 tests (1..0 = silent false green).
+# Build the fence in a variable instead — semantically identical.
 ROOT="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/references/patterns"
 @test "every pattern ref has ts/python/java/csharp/php fences and Framework idiom" {
+  fence='```'
   for f in "$ROOT"/*.md; do
     for tag in ts python java csharp php; do
-      grep -qF '```'"$tag" "$f" || { echo "MISSING ```$tag in $f"; false; }
+      grep -qF "$fence$tag" "$f" || { echo "MISSING ${fence}$tag in $f"; false; }
     done
     grep -qF '## Framework idiom' "$f" || { echo "MISSING Framework idiom in $f"; false; }
   done
