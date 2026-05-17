@@ -10,6 +10,23 @@ User points at a TS/JS scope (file/function/class) and asks what pattern fits,
 says it is messy/has a big switch, or asks to refactor to a pattern. Reactive
 only — never scan the whole repo unprompted.
 
+## Language & framework detection
+Before applying the procedure, detect the project:
+- Language by nearest marker to the edited file: `package.json`+`tsconfig`→TS;
+  `pyproject.toml`/`setup.py`/`requirements.txt`→Python; `pom.xml`/`build.gradle`→Java;
+  `*.csproj`/`*.sln`→C#; `composer.json`→PHP.
+- Framework: Spring Boot (`spring-boot` dep in pom/gradle); Laravel (`artisan`
+  file + `laravel/framework` in composer.json); .NET (`Microsoft.AspNetCore`
+  or `Microsoft.Extensions.DependencyInjection` in csproj).
+- Use the matching language code block and the `## Framework idiom` note in the
+  pattern reference. When a framework owns the machinery, prefer its idiom.
+
+Framework when-NOT (suppress hand-rolled machinery):
+- Spring / .NET app → do NOT hand-roll a DI container or Factory the framework
+  provides; recommend the framework idiom, otherwise suppress.
+- Laravel → data access belongs in Eloquent/repository per Laravel convention;
+  don't introduce a foreign data layer.
+
 ## Procedure
 1. Read the named scope only.
 2. Match against the 6 detection rules below. Confirm the smell AND that no
