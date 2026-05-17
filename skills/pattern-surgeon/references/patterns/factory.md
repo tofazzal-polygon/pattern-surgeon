@@ -64,7 +64,34 @@ def create_conn(cfg: dict) -> Conn:
 # conn = create_conn(cfg)
 ```
 ```java
-// TODO(phase-2): java example
+interface Conn {
+    String kind();
+}
+
+final class PgConn implements Conn {
+    private final String url;
+    PgConn(String url) { this.url = url; }
+    public String kind() { return "pg"; }
+}
+
+final class MySQLConn implements Conn {
+    private final String url;
+    MySQLConn(String url) { this.url = url; }
+    public String kind() { return "mysql"; }
+}
+
+final class ConnFactory {
+    static Conn create(String driver, String url) {
+        return switch (driver) {
+            case "pg" -> new PgConn(url);
+            case "mysql" -> new MySQLConn(url);
+            default -> throw new IllegalArgumentException("unknown driver " + driver);
+        };
+    }
+}
+
+// callers:
+// Conn conn = ConnFactory.create(cfg.driver(), cfg.url());
 ```
 ```csharp
 // TODO(phase-3): csharp example

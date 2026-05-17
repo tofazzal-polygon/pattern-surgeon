@@ -45,7 +45,28 @@ class StripeAdapter:
 # payments: PaymentPort = StripeAdapter()
 ```
 ```java
-// TODO(phase-2): java example
+// domain terms: dollars in, returns vendor charge equivalent (cents charged)
+interface PaymentPort {
+    int charge(double dollars, String currency);
+}
+
+final class VendorApi {
+    // fake 3rd-party vendor API: works in integer cents + uppercase code
+    static int vendorCharge(int cents, String currency) {
+        return cents;
+    }
+}
+
+final class StripeAdapter implements PaymentPort {
+    public int charge(double dollars, String currency) {
+        // convert domain shape -> vendor shape inside the adapter only
+        int cents = (int) Math.round(dollars * 100);
+        return VendorApi.vendorCharge(cents, currency.toUpperCase());
+    }
+}
+
+// callers depend on PaymentPort; adapter wired at the composition root:
+// PaymentPort payments = new StripeAdapter();
 ```
 ```csharp
 // TODO(phase-3): csharp example

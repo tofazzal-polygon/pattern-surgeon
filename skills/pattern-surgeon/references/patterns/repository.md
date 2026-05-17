@@ -59,7 +59,44 @@ def activate(id: str, users: UserRepository) -> None:
     users.save(replace(u, status="active"))
 ```
 ```java
-// TODO(phase-2): java example
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+record User(String id, String status) {}
+
+interface UserRepository {
+    Optional<User> findById(String id);
+    void save(User u);
+}
+
+final class InMemoryUserRepository implements UserRepository {
+    private final Map<String, User> store = new HashMap<>();
+
+    public Optional<User> findById(String id) {
+        return Optional.ofNullable(store.get(id));
+    }
+
+    public void save(User u) {
+        store.put(u.id(), u);
+    }
+}
+
+final class UserService {
+    private final UserRepository users;
+
+    UserService(UserRepository users) {
+        // service holds only rules; depends on the interface, not the store
+        this.users = users;
+    }
+
+    void activate(String id) {
+        User u = users.findById(id)
+            .orElseThrow(() -> new RuntimeException("not found"));
+        if (u.status().equals("banned")) throw new RuntimeException("banned");
+        users.save(new User(u.id(), "active"));
+    }
+}
 ```
 ```csharp
 // TODO(phase-3): csharp example

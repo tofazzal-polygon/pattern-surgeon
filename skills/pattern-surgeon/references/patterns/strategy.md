@@ -57,7 +57,33 @@ def price(kind: str, base: float) -> float:
     return STRATEGIES[kind].price(base)
 ```
 ```java
-// TODO(phase-2): java example
+import java.util.Map;
+
+interface PricingStrategy { double price(double base); }
+
+final class Regular implements PricingStrategy {
+    public double price(double b) { return b; }
+}
+
+final class Vip implements PricingStrategy {
+    public double price(double b) { return b * 0.8; }
+}
+
+final class Staff implements PricingStrategy {
+    public double price(double b) { return b * 0.5; }
+}
+
+final class Pricing {
+    static final Map<String, PricingStrategy> S = Map.of(
+        "regular", new Regular(),
+        "vip", new Vip(),
+        "staff", new Staff());
+
+    static double price(String kind, double base) {
+        // default/unknown branch preserved: missing key -> NullPointerException
+        return S.get(kind).price(base);
+    }
+}
 ```
 ```csharp
 // TODO(phase-3): csharp example

@@ -58,7 +58,44 @@ class OrderService:
 # svc = OrderService(FakeDb(), FixedClock(datetime(2026, 1, 1)))
 ```
 ```java
-// TODO(phase-2): java example
+import java.time.Instant;
+import java.util.Map;
+
+// BEFORE: hidden, untestable collaborators
+// final class OrderService {
+//     private final Db db = new Db(System.getenv("DB_URL")); // hidden
+//     private final Clock clock = Clock.systemUTC();          // global
+// }
+
+// AFTER: collaborators lifted to constructor params, typed by interfaces
+interface DbPort {
+    void insert(Map<String, Object> order);
+}
+
+interface ClockPort {
+    Instant now();
+}
+
+final class OrderService {
+    private final DbPort db;
+    private final ClockPort clock;
+
+    OrderService(DbPort db, ClockPort clock) {
+        this.db = db;
+        this.clock = clock;
+    }
+
+    void place(Map<String, Object> order) {
+        order.put("at", clock.now());
+        db.insert(order);
+    }
+}
+
+// composition root: wire the real implementations
+// var svc = new OrderService(new Db(System.getenv("DB_URL")), Instant::now);
+
+// test: a test double can be injected via the same constructor
+// var svc = new OrderService(new FakeDb(), () -> Instant.parse("2026-01-01T00:00:00Z"));
 ```
 ```csharp
 // TODO(phase-3): csharp example

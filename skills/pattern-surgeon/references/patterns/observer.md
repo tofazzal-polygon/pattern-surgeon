@@ -63,7 +63,42 @@ class Order:
         order_completed.notify({"order": self})
 ```
 ```java
-// TODO(phase-2): java example
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+final class Subject<E> {
+    private final List<Consumer<E>> ls = new ArrayList<>();
+
+    Runnable subscribe(Consumer<E> l) {
+        ls.add(l);
+        return () -> ls.remove(l);
+    }
+
+    void notify(E e) {
+        for (Consumer<E> l : new ArrayList<>(ls)) l.accept(e);
+    }
+}
+
+final class Order {
+    String status = "open";
+    private final Subject<Order> orderCompleted;
+
+    Order(Subject<Order> orderCompleted) {
+        this.orderCompleted = orderCompleted;
+    }
+
+    void complete() {
+        this.status = "done";
+        orderCompleted.notify(this);   // producer no longer imports consumers
+    }
+}
+
+// producer emits a domain event instead of calling consumers:
+// Subject<Order> orderCompleted = new Subject<>();
+// Runnable off = orderCompleted.subscribe(o -> emailService.send(o));
+// orderCompleted.subscribe(o -> analytics.track(o));
+// off.run(); // unsubscribe handle kept and called to avoid listener leaks
 ```
 ```csharp
 // TODO(phase-3): csharp example
