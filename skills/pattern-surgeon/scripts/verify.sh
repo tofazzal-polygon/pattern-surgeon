@@ -18,7 +18,7 @@ if [ -f package.json ]; then
 elif [ -f pyproject.toml ] || [ -f setup.py ] || [ -f requirements.txt ]; then
   STACK="python"
   if [ -f mypy.ini ] || grep -q '\[tool.mypy\]' pyproject.toml 2>/dev/null; then have mypy && TYPECHECK="mypy ."; fi
-  if python3 -m pytest --version >/dev/null 2>&1; then TEST="python3 -m pytest -q"; else TEST=""; fi
+  if python3 -m pytest --collect-only -q >/dev/null 2>&1; then TEST="python3 -m pytest -q"; else TEST=""; fi
 elif [ -f pom.xml ]; then
   STACK="maven"; TYPECHECK="mvn -q compile"; TEST="mvn -q test"
 elif [ -f build.gradle ] || [ -f build.gradle.kts ]; then

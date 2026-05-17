@@ -35,3 +35,12 @@ EOF
   run bash "$SCRIPT"
   [ "$status" -eq 0 ]
 }
+
+@test "router: python project + pytest installed but no tests exits 4" {
+  command -v python3 >/dev/null || skip "python3 absent"
+  python3 -m pytest --version >/dev/null 2>&1 || skip "pytest absent"
+  printf '[project]\nname="x"\nversion="0"\n' > pyproject.toml
+  printf 'def add(a,b):\n    return a+b\n' > impl.py
+  run bash "$SCRIPT"
+  [ "$status" -eq 4 ]
+}
