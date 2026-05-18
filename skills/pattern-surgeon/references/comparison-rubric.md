@@ -21,12 +21,14 @@ Score each axis `2` / `1` / `0`.
 
 ## Verdict scale
 
-Map the axis total (0–10) to a verdict:
+Map the axis total (0–10) to a verdict. **Apply the tiers in this order; the
+first match wins:**
 
-- `strong fit` — total ≥ 8 and smell-match = 2.
-- `partial` — total 4–7, or smell-match = 1.
-- `wrong tool here` — total ≤ 3, or smell-match = 0, or framework-idiom
-  conflict = 0.
+1. `wrong tool here` — total ≤ 3, OR smell-match = 0, OR framework-idiom
+   conflict = 0.
+2. `strong fit` — total ≥ 8 AND smell-match = 2.
+3. `partial` — anything else (total 4–7, or smell-match = 1 without a
+   `wrong tool here` trigger).
 
 ## Recommendation and tie-break
 
@@ -35,7 +37,7 @@ runner-up.
 
 **Tie-break order** (apply when top two totals are equal):
 
-1. Lower added-indirection cost wins.
+1. Lower added-indirection cost wins (higher indir score wins).
 2. Then higher framework-idiom conflict score (better idiom fit) wins.
 3. Then fewer touched files (higher change-locality score) wins.
 4. Still tied → state the tie and ASK the user to pick.
@@ -46,7 +48,7 @@ Scope: a function with a typed `switch` that both branches on `kind` AND
 `new`s a different collaborator per branch, across 3 call sites.
 
 | pattern | why-fits-here | tradeoff | when-NOT ruled | smell | local | revers | fw | indir | total | verdict |
-|---|---|---|---|---|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|---|---|---|---|
 | Strategy | switch on type ≥2 sites, branches differ by algorithm | one class per branch | not <3 cases, no shared heavy state | 2 | 2 | 2 | 1 | 2 | 9 | strong fit |
 | Factory | a family is constructed conditionally | indirection if construction is trivial | construction is non-trivial here | 1 | 1 | 2 | 1 | 1 | 6 | partial |
 

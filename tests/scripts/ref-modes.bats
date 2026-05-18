@@ -9,16 +9,23 @@ ROOT="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/references"
   done
 }
 
-@test "comparison-rubric.md has verdict scale and tie-break order" {
+@test "comparison-rubric.md has verdict scale" {
   f="$ROOT/comparison-rubric.md"
+  [ -f "$f" ]
   grep -qF "strong fit" "$f"
   grep -qF "partial" "$f"
   grep -qF "wrong tool here" "$f"
+}
+
+@test "comparison-rubric.md has tie-break order" {
+  f="$ROOT/comparison-rubric.md"
+  [ -f "$f" ]
   grep -qF "Tie-break order" "$f"
 }
 
 @test "comparison-rubric.md has a worked Strategy-vs-Factory example" {
   f="$ROOT/comparison-rubric.md"
+  [ -f "$f" ]
   grep -qF "Worked example" "$f"
   grep -qF "Strategy" "$f"
   grep -qF "Factory" "$f"
