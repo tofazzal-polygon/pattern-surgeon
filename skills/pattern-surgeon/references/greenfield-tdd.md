@@ -17,8 +17,10 @@ a failing test exist *before* any implementation.
    - exit 2 (typecheck) → fix the test until it compiles and is red, or abort.
 5. Follow `safety-harness.md`: `checkpoint.sh`, then implement the
    pattern-correct code. Re-run `verify.sh` **after implementation**: exit 0
-   = done (behavior verified); exit 2 or 3 = implementation failed →
-   `rollback.sh`, report the first failure, offer exactly one retry.
+   = done (behavior verified). post-implementation exit 2, 3, or 4 = the edit
+   failed or destroyed the test net → `rollback.sh`, report the first failure,
+   offer exactly one retry. (Exit 4 here is never acceptable: a green safety
+   net existed pre-impl; if it is gone post-impl the code is unverifiable.)
 
 ## Per-language test runner cues
 

@@ -62,3 +62,10 @@ ROOT="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/references"
   [ -f "$f" ]
   grep -qF "recommended tier" "$f"
 }
+
+@test "greenfield-tdd.md handles post-impl exit 4 as rollback" {
+  f="$ROOT/greenfield-tdd.md"
+  [ -f "$f" ]
+  grep -qF "post-implementation" "$f"
+  grep -qF "exit 2, 3, or 4" "$f"
+}

@@ -93,9 +93,10 @@ rules are shared by every mode.
 Follow `references/greenfield-tdd.md` exactly (it is authoritative for every
 `verify.sh` exit code): confirm behavior → detect language → pick pattern via
 the rubric → write a failing test first → then `safety-harness.md` to
-implement to exit 0 or roll back. Exit-code summary: 3 → proceed;
-0 → reroute to `refactor`; 2 → pre-impl: fix the test until it compiles and is
-red, or abort; post-impl: `rollback.sh`; 4 → recommend-only.
+implement to exit 0 or roll back. Exit-code summary: 3 → proceed; 0 → reroute to `refactor`; 2 → pre-impl: fix
+the test until it compiles and is red, or abort; post-impl: `rollback.sh`;
+4 → pre-impl: recommend-only (no safety net); post-impl: `rollback.sh` (net
+destroyed).
 
 ## Legacy / old projects (while this skill is active)
 - Run `scripts/verify.sh` BEFORE any edit (probe).
