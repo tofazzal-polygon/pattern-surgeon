@@ -59,3 +59,13 @@ SKILL="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/SKILL.md"
   grep -qF "fetch(" "$d/repo/UserRepository.ts"
   grep -qiF "Repository" "$d/README.md"
 }
+
+@test "greenfield fixture starts red (verify.sh exits 3, no impl yet)" {
+  d="$BATS_TEST_DIRNAME/../fixtures/greenfield-ts"
+  [ -f "$d/SPEC.md" ]
+  [ -f "$d/test.js" ]
+  command -v node >/dev/null 2>&1 || skip "node not installed"
+  vs="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/scripts/verify.sh"
+  run bash -c "cd \"$d\" && bash \"$vs\""
+  [ "$status" -eq 3 ]
+}
