@@ -49,3 +49,12 @@ SKILL="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/SKILL.md"
   grep -qiF "Strategy" "$d/README.md"
   grep -qiF "Factory" "$d/README.md"
 }
+
+@test "follow-repo fixture has sibling convention plus a non-conforming file" {
+  d="$BATS_TEST_DIRNAME/../fixtures/follow-repo-ts"
+  [ -f "$d/repo/UserRepository.ts" ]
+  [ -f "$d/repo/OrderRepository.ts" ]
+  [ -f "$d/services/InvoiceService.ts" ]
+  grep -qF "fetch(" "$d/services/InvoiceService.ts"
+  grep -qiF "Repository" "$d/README.md"
+}
