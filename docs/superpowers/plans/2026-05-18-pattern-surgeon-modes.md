@@ -645,7 +645,6 @@ git commit -m "test(pattern-surgeon): follow-repo eval fixture"
 
 **Files:**
 - Create: `tests/fixtures/greenfield-ts/package.json`
-- Create: `tests/fixtures/greenfield-ts/tsconfig.json`
 - Create: `tests/fixtures/greenfield-ts/test.js`
 - Create: `tests/fixtures/greenfield-ts/SPEC.md`
 - Test: `tests/scripts/skill-modes.bats` (append)
@@ -683,12 +682,6 @@ Create `tests/fixtures/greenfield-ts/package.json`:
 }
 ```
 
-Create `tests/fixtures/greenfield-ts/tsconfig.json`:
-
-```json
-{ "compilerOptions": { "noEmit": true, "strict": true, "skipLibCheck": true } }
-```
-
 Create `tests/fixtures/greenfield-ts/test.js`:
 
 ```js
@@ -722,12 +715,13 @@ implementing it, `verify.sh` reaches exit 0. Do NOT commit a generated
 test keeps asserting exit 3.
 ```
 
-Note: there is intentionally no `node_modules`/`tsc` here; with no
-`tsconfig`-driven typecheck tool installed locally the router skips typecheck,
-runs `npm test`, the test exits 1 → `verify.sh` exits 3. (`tsconfig.json` is
-present only so the eval exercises the TS branch; `verify.sh` uses
-`npx --no-install tsc` which no-ops when typescript is absent and does not
-fail the run.)
+Note: NO `tsconfig.json` in this fixture (deliberate). `verify.sh`'s node
+branch only sets a typecheck command when `tsconfig.json` is present, and that
+command is `npx --no-install tsc --noEmit`, which **fails with non-zero (→
+`verify.sh` exit 2) when typescript is not installed** — it does not no-op.
+A node-only fixture (no `tsconfig.json`, no `node_modules`) therefore skips
+typecheck, runs `npm test`, the test exits 1 because `impl.js` is absent →
+`verify.sh` exits 3, which is exactly the greenfield start-state gate.
 
 - [ ] **Step 4: Run test to verify it passes**
 
