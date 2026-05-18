@@ -1,0 +1,15 @@
+{
+  "name": "pattern-surgeon",
+  "version": "1.0.0",
+  "description": "Reactive design-pattern skill for TS/JS/Python/Java/C#/PHP/Kotlin/Dart/Swift. Recommends, applies, and auto-reverts Strategy/Factory/Adapter/Repository/Observer/DI across 9 language stacks with typecheck+test verification.",
+  "author": "nuhin13",
+  "homepage": "https://github.com/nuhin13/pattern-surgeon",
+  "license": "MIT",
+  "keywords": ["design-patterns", "refactoring", "typescript", "python", "java", "kotlin", "dart", "swift", "strategy", "factory", "adapter"],
+  "skills": [
+    {
+      "name": "pattern-surgeon",
+      "path": "skills/pattern-surgeon"
+    }
+  ]
+}

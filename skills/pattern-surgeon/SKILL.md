@@ -1,6 +1,8 @@
 ---
 name: pattern-surgeon
 description: Use when the user names a TS/JS/Python/Java/C#/PHP/Kotlin/Dart/Swift file or function and asks what design pattern fits, asks to compare which pattern (and why/how it fits), to refactor to a pattern, to make new code match existing patterns ("match existing", "make this consistent"), or to implement new behavior with the right pattern. Recommends one of Strategy/Factory/Adapter/Repository/Observer/Dependency-Injection, applies it, and reverts unless typecheck and tests stay green. Reactive only — never scans the repo unprompted.
+allowed-tools: Bash Read
+argument-hint: [file-or-scope] [mode?]
 ---
 
 # pattern-surgeon

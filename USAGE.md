@@ -6,29 +6,96 @@
 
 ---
 
-## Install (30 seconds)
+## Install
+
+### Option 1 — Claude Code plugin (recommended, one command)
+
+In a Claude Code session type:
+
+```
+/plugin marketplace add nuhin13/pattern-surgeon
+/plugin install pattern-surgeon
+```
+
+The skill activates automatically. No slash command needed — just talk to Claude.
+
+**To update:**
+```
+/plugin update pattern-surgeon
+```
+
+**To uninstall:**
+```
+/plugin remove pattern-surgeon
+```
+
+---
+
+### Option 2 — npx (no install required)
+
+```bash
+# Global — use in any project
+npx @nuhin13/pattern-surgeon
+
+# Project-local — current project only, committable to git
+npx @nuhin13/pattern-surgeon --project
+```
+
+After running, restart Claude Code (or open a new session).
+
+**Help:**
+```bash
+npx @nuhin13/pattern-surgeon --help
+```
+
+**Uninstall:**
+```bash
+npx @nuhin13/pattern-surgeon remove
+```
+
+---
+
+### Option 3 — npm global install
+
+```bash
+npm install -g @nuhin13/pattern-surgeon
+# installs automatically via postinstall to ~/.claude/skills/
+```
+
+---
+
+### Option 4 — shell one-liner
+
+```bash
+# Global
+curl -fsSL https://raw.githubusercontent.com/nuhin13/pattern-surgeon/main/install.sh | bash
+
+# Project-local (commit to share with your team)
+curl -fsSL https://raw.githubusercontent.com/nuhin13/pattern-surgeon/main/install.sh | bash -s -- --project
+git add .claude/skills/pattern-surgeon && git commit -m "add pattern-surgeon skill"
+```
+
+---
+
+### Option 5 — clone the repo (zero install)
 
 ```bash
 git clone https://github.com/nuhin13/pattern-surgeon
-# symlink into Claude Code skills directory
-ln -s "$PWD/pattern-surgeon/skills/pattern-surgeon" \
-      ~/.claude/skills/pattern-surgeon
+cd pattern-surgeon
 ```
 
-Or copy instead of symlink if you prefer an isolated copy:
+`.claude/skills/pattern-surgeon` is already a symlink to `skills/pattern-surgeon/`.
+Claude Code picks it up automatically when you open this directory — no install step.
 
-```bash
-cp -r pattern-surgeon/skills/pattern-surgeon ~/.claude/skills/pattern-surgeon
-```
+---
 
-The skill is reactive — Claude picks it up automatically from its `description:`
-frontmatter. No slash command needed.
+### Where skills live
 
-**Verify install:**
-
-```bash
-bats pattern-surgeon/tests/scripts/   # all tests should pass
-```
+| Scope | Path | Who sees it |
+|---|---|---|
+| Global | `~/.claude/skills/pattern-surgeon/` | All your projects |
+| Project | `.claude/skills/pattern-surgeon/` | This project only |
+| Plugin | Managed by `/plugin` command | Where plugin is enabled |
 
 ---
 
