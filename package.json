@@ -1,0 +1,27 @@
+{
+  "name": "@nuhin13/pattern-surgeon",
+  "version": "1.0.0",
+  "description": "Reactive design-pattern skill for Claude Code — 9 languages, verify-or-revert safety",
+  "keywords": ["claude-code", "claude", "skill", "design-patterns", "refactoring"],
+  "author": "nuhin13",
+  "license": "MIT",
+  "homepage": "https://github.com/nuhin13/pattern-surgeon",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nuhin13/pattern-surgeon.git"
+  },
+  "bin": {
+    "pattern-surgeon": "bin/install.js"
+  },
+  "files": [
+    "skills/",
+    "bin/",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "postinstall": "node bin/install.js --postinstall"
+  }
+}
