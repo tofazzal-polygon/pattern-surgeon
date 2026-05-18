@@ -31,10 +31,10 @@ ROOT="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/references"
   grep -qF "Factory" "$f"
 }
 
-@test "greenfield-tdd.md has per-language test runners" {
+@test "greenfield-tdd.md has per-language test runners including mobile" {
   f="$ROOT/greenfield-tdd.md"
   [ -f "$f" ]
-  for r in pytest JUnit xUnit PHPUnit vitest; do
+  for r in pytest JUnit xUnit PHPUnit vitest XCTest "kotlin.test" "dart test"; do
     grep -qF "$r" "$f" || { echo "MISSING runner: $r"; false; }
   done
 }

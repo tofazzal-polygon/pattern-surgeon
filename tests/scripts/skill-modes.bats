@@ -10,7 +10,7 @@ SKILL="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/SKILL.md"
   grep -qF "ASK" "$SKILL"
 }
 
-@test "SKILL.md description front matter covers new modes and languages" {
+@test "SKILL.md description front matter covers modes, web and mobile languages" {
   [ -f "$SKILL" ]
   hdr="$(sed -n '1,5p' "$SKILL")"
   echo "$hdr" | grep -qiF "compare"
@@ -20,6 +20,9 @@ SKILL="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/SKILL.md"
   echo "$hdr" | grep -qiF "Java"
   echo "$hdr" | grep -qiF "C#"
   echo "$hdr" | grep -qiF "PHP"
+  echo "$hdr" | grep -qiF "Kotlin"
+  echo "$hdr" | grep -qiF "Dart"
+  echo "$hdr" | grep -qiF "Swift"
 }
 
 @test "SKILL.md has a Modes block with the three new procedures" {
@@ -93,6 +96,45 @@ SKILL="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/SKILL.md"
   [ -f "$SKILL" ]
   grep -qiE 'ambiguous.*ASK' "$SKILL"
   grep -qiF "never guess" "$SKILL"
+}
+
+@test "SKILL.md has Lazy Loading Protocol with per-mode load table" {
+  [ -f "$SKILL" ]
+  grep -qF "## Lazy Loading Protocol" "$SKILL"
+  grep -qF "Load on activation" "$SKILL"
+  grep -qF "Load after detection" "$SKILL"
+  # every mode must have a row in the lazy-load table
+  for m in suggest refactor compare follow greenfield; do
+    grep -qF "| \`$m\`" "$SKILL" || { echo "MISSING lazy-load row for $m"; false; }
+  done
+  grep -qiF "10 000 tokens" "$SKILL"
+}
+
+@test "SKILL.md follow mode has explicit scope algorithm with layer names and caps" {
+  [ -f "$SKILL" ]
+  grep -qF "Scope algorithm" "$SKILL"
+  # key layer directory names
+  for layer in services repositories adapters features domain; do
+    grep -qF "$layer" "$SKILL" || { echo "MISSING layer name: $layer"; false; }
+  done
+  grep -qF "max 20 files" "$SKILL"
+  grep -qiF "project root" "$SKILL"
+}
+
+@test "SKILL.md Procedure references lazy loading before reading pattern file" {
+  [ -f "$SKILL" ]
+  # Procedure must say to use inline table first (no file reads)
+  grep -qiF "no pattern file reads yet" "$SKILL"
+  # Then load pattern file after detection
+  grep -qF "references/patterns/<matched>.md" "$SKILL"
+}
+
+@test "SKILL.md compare mode loads comparison-rubric and candidate patterns only" {
+  [ -f "$SKILL" ]
+  # compare section must reference lazy loading of candidate patterns
+  grep -qF "references/comparison-rubric.md" "$SKILL"
+  grep -qF "references/patterns/<candidate>.md" "$SKILL"
+  grep -qiF "not all six" "$SKILL"
 }
 
 @test "greenfield exit-0 reroute path: impl present -> verify exits 0, reroute rule documented" {

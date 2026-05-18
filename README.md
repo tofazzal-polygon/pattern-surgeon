@@ -65,9 +65,12 @@ When you clone this repo, `.claude/skills/pattern-surgeon` is a symlink to
 |---|---|
 | TypeScript / JavaScript | Kotlin (Android + Hilt + Room) |
 | Python | Dart (Flutter + Riverpod + BLoC) |
-| Java (Spring Boot) | Swift (iOS + Combine + SwiftUI) |
+| Java (Spring Boot, Maven, Gradle) | Swift (iOS + Combine + SwiftUI) |
 | C# (.NET Core) | |
 | PHP (Laravel) | |
+
+Verification auto-detects the stack; the safety contract (checkpoint →
+verify → rollback) is identical across all 9 stacks.
 
 ---
 
@@ -75,8 +78,9 @@ When you clone this repo, `.claude/skills/pattern-surgeon` is a symlink to
 
 Strategy · Factory · Adapter · Repository · Observer · Dependency Injection
 
-Each pattern has smell detection, when-NOT suppression rules, transform recipes,
-code examples in all 9 languages, and framework-specific idioms.
+Each has: smell signature, when-NOT suppression rules, transform recipe,
+code examples in all 9 languages, framework-specific idioms (Hilt, Room,
+StateFlow, Riverpod, BLoC, Combine, SwiftUI, Spring, .NET, Eloquent).
 
 ---
 
@@ -112,12 +116,13 @@ npx @nuhin13/pattern-surgeon remove --project    # project-local
 
 ---
 
-## Cross-CLI (Codex, Cursor, Aider, Gemini)
+## Cross-CLI compatibility
 
-The shell scripts (`verify.sh`, `checkpoint.sh`, `rollback.sh`) and all pattern
-guides are plain bash / Markdown — portable to any AI coding tool.
+Designed for **Claude Code** (native skill format). The shell safety scripts
+(`verify.sh`, `checkpoint.sh`, `rollback.sh`) and all pattern guides are
+fully portable to Codex CLI, Cursor, Aider, Gemini CLI, and OpenCode.
 
-→ [`docs/CROSS-CLI.md`](docs/CROSS-CLI.md)
+**→ Adapter guide: [`docs/CROSS-CLI.md`](docs/CROSS-CLI.md)**
 
 ---
 
@@ -127,4 +132,7 @@ guides are plain bash / Markdown — portable to any AI coding tool.
 bats tests/scripts/   # run all 8 test suites
 ```
 
-→ Full usage guide with worked examples: [`USAGE.md`](USAGE.md)
+## Docs
+
+- Usage & examples: [`USAGE.md`](USAGE.md)
+- Cross-CLI: [`docs/CROSS-CLI.md`](docs/CROSS-CLI.md)

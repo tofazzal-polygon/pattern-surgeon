@@ -29,6 +29,9 @@ a failing test exist *before* any implementation.
 - Java — `JUnit` via `mvn -q test` / `gradle test`.
 - C#/.NET — `xUnit` via `dotnet test`.
 - PHP — `PHPUnit` (or `php artisan test` on Laravel).
+- Kotlin/Android — `kotlin.test` via `./gradlew testDebugUnitTest`.
+- Dart/Flutter — `package:test` via `dart test` / `flutter test`.
+- Swift — `XCTest` via `swift test`.
 
 A "failing test for not-yet-built behavior" asserts the intended public
 contract of the pattern's entry point (e.g. `strategies[kind].price(base)`
