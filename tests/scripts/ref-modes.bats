@@ -41,6 +41,7 @@ ROOT="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/references"
 
 @test "greenfield-tdd.md states the exit-3 gate and reroute rule" {
   f="$ROOT/greenfield-tdd.md"
+  [ -f "$f" ]
   grep -qF "exit 3" "$f"
   grep -qF "exit 0" "$f"
   grep -qF "exit 4" "$f"

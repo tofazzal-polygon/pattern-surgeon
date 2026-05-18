@@ -15,9 +15,10 @@ a failing test exist *before* any implementation.
    - exit 0 (already passes) → the behavior already exists; **reroute to refactor** mode, do not duplicate.
    - exit 4 (no test runner/target) → cannot establish a safety net; abort to recommend-only. Do not write unverifiable code.
    - exit 2 (typecheck) → fix the test until it compiles and is red, or abort.
-5. Follow `safety-harness.md`: `checkpoint.sh`, implement the pattern-correct
-   code, `verify.sh` must reach exit 0. exit 2/3 → `rollback.sh`, report the
-   first failure, offer exactly one retry.
+5. Follow `safety-harness.md`: `checkpoint.sh`, then implement the
+   pattern-correct code. Re-run `verify.sh` **after implementation**: exit 0
+   = done (behavior verified); exit 2 or 3 = implementation failed →
+   `rollback.sh`, report the first failure, offer exactly one retry.
 
 ## Per-language test runner cues
 
