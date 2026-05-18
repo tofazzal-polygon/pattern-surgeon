@@ -19,6 +19,11 @@ elif [ -f pyproject.toml ] || [ -f setup.py ] || [ -f requirements.txt ]; then
   STACK="python"
   if [ -f mypy.ini ] || grep -q '\[tool.mypy\]' pyproject.toml 2>/dev/null; then have mypy && TYPECHECK="mypy ."; fi
   if python3 -m pytest --collect-only -q >/dev/null 2>&1; then TEST="python3 -m pytest -q"; else TEST=""; fi
+elif [ -f app/src/main/AndroidManifest.xml ]; then
+  STACK="android-kotlin"
+  TYPECHECK="./gradlew -q compileDebugKotlin"
+  TEST="./gradlew -q testDebugUnitTest"
+  [ -x ./gradlew ] || { TYPECHECK="gradle -q compileDebugKotlin"; TEST="gradle -q testDebugUnitTest"; }
 elif [ -f pom.xml ]; then
   STACK="maven"; TYPECHECK="mvn -q compile"; TEST="mvn -q test"
 elif [ -f build.gradle ] || [ -f build.gradle.kts ]; then
@@ -32,6 +37,14 @@ elif [ -f composer.json ]; then
   if [ -f artisan ]; then TEST="php artisan test"
   elif [ -f vendor/bin/phpunit ]; then TEST="vendor/bin/phpunit"
   else TEST=""; fi
+elif [ -f pubspec.yaml ]; then
+  if grep -q 'flutter:' pubspec.yaml 2>/dev/null; then
+    STACK="flutter"; TYPECHECK="flutter analyze"; TEST="flutter test"
+  else
+    STACK="dart"; TYPECHECK="dart analyze"; TEST="dart test"
+  fi
+elif [ -f Package.swift ]; then
+  STACK="swift"; TYPECHECK="swift build"; TEST="swift test"
 fi
 
 echo "pattern-surgeon: detected stack=$STACK"

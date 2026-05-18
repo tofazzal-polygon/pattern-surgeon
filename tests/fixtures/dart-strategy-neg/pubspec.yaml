@@ -1,0 +1,6 @@
+name: dart_strategy_neg
+description: Pattern-surgeon fixture — Strategy smell in Dart (same if/else on kind repeated at 2 sites).
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+dev_dependencies:
+  test: ^1.24.0

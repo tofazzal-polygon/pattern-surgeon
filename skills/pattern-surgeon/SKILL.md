@@ -1,6 +1,6 @@
 ---
 name: pattern-surgeon
-description: Use when the user names a TS/JS/Python/Java/C#/PHP file or function and asks what design pattern fits, asks to compare which pattern (and why/how it fits), to refactor to a pattern, to make new code match existing patterns ("match existing", "make this consistent"), or to implement new behavior with the right pattern. Recommends one of Strategy/Factory/Adapter/Repository/Observer/Dependency-Injection, applies it, and reverts unless typecheck and tests stay green. Reactive only — never scans the repo unprompted.
+description: Use when the user names a TS/JS/Python/Java/C#/PHP/Kotlin/Dart/Swift file or function and asks what design pattern fits, asks to compare which pattern (and why/how it fits), to refactor to a pattern, to make new code match existing patterns ("match existing", "make this consistent"), or to implement new behavior with the right pattern. Recommends one of Strategy/Factory/Adapter/Repository/Observer/Dependency-Injection, applies it, and reverts unless typecheck and tests stay green. Reactive only — never scans the repo unprompted.
 ---
 
 # pattern-surgeon
@@ -15,10 +15,15 @@ only — never scan the whole repo unprompted.
 Before applying the procedure, detect the project:
 - Language by nearest marker to the edited file: `package.json`+`tsconfig`→TS;
   `pyproject.toml`/`setup.py`/`requirements.txt`→Python; `pom.xml`/`build.gradle`→Java;
-  `*.csproj`/`*.sln`→C#; `composer.json`→PHP.
+  `*.csproj`/`*.sln`→C#; `composer.json`→PHP;
+  `app/src/main/AndroidManifest.xml` (or `build.gradle`+android block)→Kotlin/Android;
+  `pubspec.yaml`→Dart/Flutter; `Package.swift`→Swift.
 - Framework: Spring Boot (`spring-boot` dep in pom/gradle); Laravel (`artisan`
   file + `laravel/framework` in composer.json); .NET (`Microsoft.AspNetCore`
-  or `Microsoft.Extensions.DependencyInjection` in csproj).
+  or `Microsoft.Extensions.DependencyInjection` in csproj);
+  Android (`com.android.application` plugin in build.gradle.kts);
+  Flutter (`flutter:` dependency in pubspec.yaml);
+  SwiftUI/Combine (imports in Swift sources).
 - Use the matching language code block and the `## Framework idiom` note in the
   pattern reference. When a framework owns the machinery, prefer its idiom.
 
@@ -27,6 +32,14 @@ Framework when-NOT (suppress hand-rolled machinery):
   provides; recommend the framework idiom, otherwise suppress.
 - Laravel → data access belongs in Eloquent/repository per Laravel convention;
   don't introduce a foreign data layer.
+- Android/Kotlin → do NOT hand-roll a DI container when Hilt is present; do NOT
+  bypass Room for data access; prefer `StateFlow`/`SharedFlow` over a hand-rolled
+  Observer subject.
+- Flutter/Dart → do NOT hand-roll a subject when `StreamController` or a
+  state-management package (Riverpod, BLoC) is already in pubspec; prefer
+  `get_it` for service location when it is already a dependency.
+- Swift/iOS → do NOT hand-roll an Observer subject when Combine is available;
+  prefer `@Environment`/`@EnvironmentObject` for SwiftUI dependency passing.
 
 ## Intent routing
 Before the Procedure, map the request to exactly one mode. Ambiguous between

@@ -177,10 +177,96 @@ final class OrderService {
 // $svc = new OrderService(new FakeDb(), new FixedClock(new \DateTimeImmutable('2026-01-01')));
 ```
 
+```kotlin
+import java.time.Instant
+
+// BEFORE: hidden, untestable collaborators
+// class OrderService {
+//     private val db = Db(System.getenv("DB_URL"))   // hidden
+// }
+
+// AFTER: collaborators lifted to constructor params, typed by interfaces
+interface DbPort { fun insert(order: Map<String, Any>) }
+interface ClockPort { fun now(): Instant }
+
+class OrderService(private val db: DbPort, private val clock: ClockPort) {
+    fun place(order: Map<String, Any>) {
+        db.insert(order + ("at" to clock.now()))
+    }
+}
+
+// composition root: wire the real implementations
+// val svc = OrderService(Db(System.getenv("DB_URL")), SystemClock())
+
+// test: a test double can be injected via the same constructor
+// val svc = OrderService(FakeDb(), FixedClock(Instant.parse("2026-01-01T00:00:00Z")))
+```
+```dart
+// BEFORE: hidden, untestable collaborators
+// class OrderService {
+//   final _db = Db(Platform.environment['DB_URL']!);   // hidden
+// }
+
+// AFTER: collaborators lifted to constructor params, typed by interfaces
+abstract interface class DbPort { void insert(Map<String, Object> order); }
+abstract interface class ClockPort { DateTime now(); }
+
+class OrderService {
+  final DbPort _db;
+  final ClockPort _clock;
+  // collaborators lifted to constructor params
+  OrderService(this._db, this._clock);
+
+  void place(Map<String, Object> order) {
+    _db.insert({...order, 'at': _clock.now()});
+  }
+}
+
+// composition root: wire the real implementations
+// final svc = OrderService(Db(Platform.environment['DB_URL']!), SystemClock());
+
+// test: a test double can be injected via the same constructor
+// final svc = OrderService(FakeDb(), FixedClock(DateTime(2026, 1, 1)));
+```
+```swift
+import Foundation
+
+// BEFORE: hidden, untestable collaborators
+// class OrderService {
+//     private let db = Db(ProcessInfo.processInfo.environment["DB_URL"]!)  // hidden
+//     private let clock: () -> Date = Date.init                             // global
+// }
+
+// AFTER: collaborators lifted to init params, typed by protocols
+protocol DbPort { func insert(_ order: [String: Any]) }
+protocol ClockPort { func now() -> Date }
+
+class OrderService {
+    private let db: any DbPort
+    private let clock: any ClockPort
+    // collaborators lifted to init params
+    init(db: any DbPort, clock: any ClockPort) { self.db = db; self.clock = clock }
+
+    func place(_ order: [String: Any]) {
+        var o = order; o["at"] = clock.now()
+        db.insert(o)
+    }
+}
+
+// composition root: wire the real implementations
+// let svc = OrderService(db: RealDb(url: env["DB_URL"]!), clock: SystemClock())
+
+// test: a test double can be injected via the same init
+// let svc = OrderService(db: FakeDb(), clock: FixedClock(date: Date(timeIntervalSince1970: 0)))
+```
+
 ## Framework idiom
 - Spring Boot: use constructor injection with `@Component`/`@Service`; let the container wire — do not `new` collaborators.
 - .NET Core: register in `IServiceCollection` (`AddScoped`/`AddSingleton`) and constructor-inject; do not `new`.
 - Laravel: type-hint collaborators in the constructor; the service container auto-resolves; bind interfaces in a ServiceProvider.
+- Android/Kotlin: use Hilt (`@Inject constructor`, `@HiltViewModel`); let the container wire — do not `new` collaborators.
+- Flutter/Dart: use `get_it` or Riverpod `Provider`s to supply collaborators; avoid hidden `new` inside classes.
+- Swift/iOS: use constructor injection; for SwiftUI pass dependencies via `@Environment`/`@EnvironmentObject`; for larger apps use Resolver or Swinject.
 
 ## Before / After
 Before: `class OrderService { db = new Db() }`.

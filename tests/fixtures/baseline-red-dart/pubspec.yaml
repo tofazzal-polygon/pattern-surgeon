@@ -1,0 +1,6 @@
+name: baseline_red_dart
+description: Pattern-surgeon baseline-red fixture for Dart — a project with a failing test. Router => dart stack => exit 3.
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+dev_dependencies:
+  test: ^1.24.0

@@ -119,10 +119,73 @@ final class StripeAdapter implements PaymentPort {
 // $payments = new StripeAdapter();
 ```
 
+```kotlin
+// domain terms: dollars in, returns cents charged
+interface PaymentPort { fun charge(dollars: Double, currency: String): Int }
+
+// fake 3rd-party vendor API: works in integer cents + uppercase code
+object VendorApi {
+    fun vendorCharge(cents: Int, currency: String): Int = cents
+}
+
+class StripeAdapter : PaymentPort {
+    override fun charge(dollars: Double, currency: String): Int {
+        // convert domain shape -> vendor shape inside the adapter only
+        val cents = (dollars * 100).toInt()
+        return VendorApi.vendorCharge(cents, currency.uppercase())
+    }
+}
+
+// callers depend on PaymentPort; adapter wired at the composition root:
+// val payments: PaymentPort = StripeAdapter()
+```
+```dart
+// domain terms: dollars in, returns cents charged
+abstract interface class PaymentPort {
+  int charge(double dollars, String currency);
+}
+
+// fake 3rd-party vendor API: works in integer cents + uppercase code
+int vendorCharge(int cents, String currency) => cents;
+
+class StripeAdapter implements PaymentPort {
+  @override
+  int charge(double dollars, String currency) {
+    // convert domain shape -> vendor shape inside the adapter only
+    final cents = (dollars * 100).round();
+    return vendorCharge(cents, currency.toUpperCase());
+  }
+}
+
+// callers depend on PaymentPort; adapter wired at the composition root:
+// PaymentPort payments = StripeAdapter();
+```
+```swift
+// domain terms: dollars in, returns cents charged
+protocol PaymentPort { func charge(dollars: Double, currency: String) -> Int }
+
+// fake 3rd-party vendor API: works in integer cents + uppercase code
+func vendorCharge(cents: Int, currency: String) -> Int { cents }
+
+struct StripeAdapter: PaymentPort {
+    func charge(dollars: Double, currency: String) -> Int {
+        // convert domain shape -> vendor shape inside the adapter only
+        let cents = Int((dollars * 100).rounded())
+        return vendorCharge(cents: cents, currency: currency.uppercased())
+    }
+}
+
+// callers depend on PaymentPort; adapter wired at the composition root:
+// let payments: any PaymentPort = StripeAdapter()
+```
+
 ## Framework idiom
 - Spring Boot: no framework-specific idiom; the adapter is a normal `@Component`.
 - .NET Core: no framework-specific idiom; register the adapter against its port interface in DI.
 - Laravel: no framework-specific idiom; bind the port to the adapter in a ServiceProvider.
+- Android/Kotlin: no framework-specific idiom; annotate the adapter with `@Singleton` and bind it to the port interface in a Hilt `@Module`.
+- Flutter/Dart: no framework-specific idiom; register `StripeAdapter` against `PaymentPort` in `get_it`.
+- Swift/iOS: no framework-specific idiom; register the adapter against its protocol in the DI layer (Resolver/Swinject).
 
 ## Before / After
 Before: `stripe.charges.create(...)` sprinkled everywhere.

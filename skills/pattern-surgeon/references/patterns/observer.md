@@ -179,10 +179,97 @@ final class Order {
 // $off(); // unsubscribe handle kept and called to avoid listener leaks
 ```
 
+```kotlin
+class Subject<E> {
+    private val listeners = mutableListOf<(E) -> Unit>()
+
+    fun subscribe(l: (E) -> Unit): () -> Unit {
+        listeners.add(l)
+        return { listeners.remove(l) }
+    }
+
+    fun notify(e: E) {
+        for (l in listeners.toList()) l(e)
+    }
+}
+
+data class Order(var status: String = "open")
+val orderCompleted = Subject<Order>()
+
+fun complete(order: Order) {
+    order.status = "done"
+    orderCompleted.notify(order)   // producer no longer imports consumers
+}
+
+// producer emits a domain event instead of calling consumers:
+// val off = orderCompleted.subscribe { o -> emailService.send(o) }
+// orderCompleted.subscribe { o -> analytics.track(o) }
+// off() // unsubscribe handle kept and called to avoid listener leaks
+```
+```dart
+class Subject<E> {
+  final _listeners = <void Function(E)>[];
+
+  void Function() subscribe(void Function(E) l) {
+    _listeners.add(l);
+    return () => _listeners.remove(l);
+  }
+
+  void notify(E e) {
+    for (final l in List.of(_listeners)) l(e);
+  }
+}
+
+class Order { String status = 'open'; }
+final orderCompleted = Subject<Order>();
+
+void complete(Order order) {
+  order.status = 'done';
+  orderCompleted.notify(order);   // producer no longer imports consumers
+}
+
+// producer emits a domain event instead of calling consumers:
+// final off = orderCompleted.subscribe((o) => emailService.send(o));
+// orderCompleted.subscribe((o) => analytics.track(o));
+// off(); // unsubscribe handle kept and called to avoid listener leaks
+```
+```swift
+final class Subject<E> {
+    private var listeners: [UUID: (E) -> Void] = [:]
+
+    @discardableResult
+    func subscribe(_ l: @escaping (E) -> Void) -> () -> Void {
+        let id = UUID()
+        listeners[id] = l
+        return { [weak self] in self?.listeners.removeValue(forKey: id) }
+    }
+
+    func notify(_ e: E) {
+        for l in listeners.values { l(e) }
+    }
+}
+
+class Order { var status = "open" }
+let orderCompleted = Subject<Order>()
+
+func complete(_ order: Order) {
+    order.status = "done"
+    orderCompleted.notify(order)   // producer no longer imports consumers
+}
+
+// producer emits a domain event instead of calling consumers:
+// let off = orderCompleted.subscribe { o in emailService.send(o) }
+// orderCompleted.subscribe { o in analytics.track(o) }
+// off() // unsubscribe handle kept and called to avoid listener leaks
+```
+
 ## Framework idiom
 - Spring Boot: prefer `ApplicationEventPublisher` + `@EventListener` over a hand-rolled subject.
 - .NET Core: prefer `IObservable<T>`/events or `MediatR` notifications over a hand-rolled subject.
 - Laravel: prefer Laravel Events & Listeners over a hand-rolled subject.
+- Android/Kotlin: prefer `StateFlow`/`SharedFlow` (Kotlin Coroutines) or `LiveData` over a hand-rolled subject.
+- Flutter/Dart: prefer `Stream`/`StreamController` or a BLoC/Riverpod state-management solution over a hand-rolled subject.
+- Swift/iOS: prefer `Combine` publishers or `AsyncStream` over a hand-rolled subject.
 
 ## Before / After
 Before: `Order.complete()` calls `emailService` / `analytics` / `inventory`.

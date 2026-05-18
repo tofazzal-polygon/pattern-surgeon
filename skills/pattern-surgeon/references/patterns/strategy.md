@@ -139,10 +139,65 @@ final class Pricing {
 }
 ```
 
+```kotlin
+interface PricingStrategy { fun price(base: Double): Double }
+
+object Regular : PricingStrategy { override fun price(base: Double) = base }
+object Vip     : PricingStrategy { override fun price(base: Double) = base * 0.8 }
+object Staff   : PricingStrategy { override fun price(base: Double) = base * 0.5 }
+
+private val strategies = mapOf<String, PricingStrategy>(
+    "regular" to Regular, "vip" to Vip, "staff" to Staff,
+)
+
+fun price(kind: String, base: Double): Double =
+    strategies[kind]?.price(base) ?: error("Unknown kind: $kind")
+```
+```dart
+abstract interface class PricingStrategy {
+  double price(double base);
+}
+
+class Regular implements PricingStrategy {
+  @override double price(double base) => base;
+}
+class Vip implements PricingStrategy {
+  @override double price(double base) => base * 0.8;
+}
+class Staff implements PricingStrategy {
+  @override double price(double base) => base * 0.5;
+}
+
+final _strategies = <String, PricingStrategy>{
+  'regular': Regular(), 'vip': Vip(), 'staff': Staff(),
+};
+
+double price(String kind, double base) => _strategies[kind]!.price(base);
+```
+```swift
+protocol PricingStrategy { func price(base: Double) -> Double }
+
+struct Regular: PricingStrategy { func price(base: Double) -> Double { base } }
+struct Vip:     PricingStrategy { func price(base: Double) -> Double { base * 0.8 } }
+struct Staff:   PricingStrategy { func price(base: Double) -> Double { base * 0.5 } }
+
+private let strategies: [String: any PricingStrategy] = [
+    "regular": Regular(), "vip": Vip(), "staff": Staff(),
+]
+
+func price(kind: String, base: Double) -> Double {
+    guard let s = strategies[kind] else { fatalError("Unknown kind: \(kind)") }
+    return s.price(base: base)
+}
+```
+
 ## Framework idiom
 - Spring Boot: no framework-specific idiom; a `@Component` may hold the strategy map.
 - .NET Core: no framework-specific idiom; register strategies via keyed DI if desired.
 - Laravel: no framework-specific idiom; resolve strategy from the service container if desired.
+- Android/Kotlin: no framework-specific idiom; hold the strategy map in a ViewModel or use-case class.
+- Flutter/Dart: no framework-specific idiom; inject strategies via constructor or a Riverpod provider.
+- Swift/iOS: no framework-specific idiom; use a `[String: any PricingStrategy]` dictionary; compatible with SwiftUI ViewModels.
 
 ## Before / After
 Before: the conditional above duplicated in checkout + invoice.

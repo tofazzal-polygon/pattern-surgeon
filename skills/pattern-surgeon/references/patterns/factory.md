@@ -150,10 +150,74 @@ final class ConnFactory {
 // $conn = ConnFactory::create($cfg['driver'], $cfg['url']);
 ```
 
+```kotlin
+interface Conn { val kind: String }
+
+class PgConn(val url: String) : Conn { override val kind = "pg" }
+class MySQLConn(val url: String) : Conn { override val kind = "mysql" }
+
+object ConnFactory {
+    fun create(driver: String, url: String): Conn = when (driver) {
+        "pg"    -> PgConn(url)
+        "mysql" -> MySQLConn(url)
+        else    -> error("unknown driver $driver")
+    }
+}
+
+// callers:
+// val conn = ConnFactory.create(cfg.driver, cfg.url)
+```
+```dart
+abstract interface class Conn { String get kind; }
+
+class PgConn implements Conn {
+  final String url;
+  PgConn(this.url);
+  @override String get kind => 'pg';
+}
+
+class MySQLConn implements Conn {
+  final String url;
+  MySQLConn(this.url);
+  @override String get kind => 'mysql';
+}
+
+Conn createConn(String driver, String url) => switch (driver) {
+  'pg'    => PgConn(url),
+  'mysql' => MySQLConn(url),
+  _       => throw ArgumentError('unknown driver $driver'),
+};
+
+// callers:
+// final conn = createConn(cfg['driver']!, cfg['url']!);
+```
+```swift
+protocol Conn { var kind: String { get } }
+
+struct PgConn: Conn { let url: String; var kind: String { "pg" } }
+struct MySQLConn: Conn { let url: String; var kind: String { "mysql" } }
+
+enum ConnFactory {
+    static func create(driver: String, url: String) -> any Conn {
+        switch driver {
+        case "pg":    return PgConn(url: url)
+        case "mysql": return MySQLConn(url: url)
+        default:      fatalError("unknown driver \(driver)")
+        }
+    }
+}
+
+// callers:
+// let conn = ConnFactory.create(driver: cfg.driver, url: cfg.url)
+```
+
 ## Framework idiom
 - Spring Boot: prefer `@Bean` methods in a `@Configuration` class over a hand-rolled factory.
 - .NET Core: prefer a typed factory delegate or `IServiceProvider`; avoid hand-rolled switch factories.
 - Laravel: prefer the container `make()` / model factories over a hand-rolled factory.
+- Android/Kotlin: prefer Hilt `@Provides`/`@Binds` in a `@Module` over a hand-rolled factory.
+- Flutter/Dart: `get_it` registrations can replace a hand-rolled factory; use `registerFactory` for new instances.
+- Swift/iOS: no framework-specific idiom; use an `enum` with a static `create` method or a DI container.
 
 ## Before / After
 Before: `new MySQLConn()` / `new PgConn()` chosen inline in many modules.

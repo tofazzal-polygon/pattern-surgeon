@@ -52,3 +52,38 @@ EOF
   run bash "$SCRIPT"
   echo "$output" | grep -q 'detected stack=dotnet'
 }
+
+@test "router: Android/Kotlin project detected via AndroidManifest.xml" {
+  mkdir -p app/src/main
+  printf '<manifest package="com.example"/>\n' > app/src/main/AndroidManifest.xml
+  : > build.gradle.kts
+  run bash "$SCRIPT"
+  echo "$output" | grep -q 'detected stack=android-kotlin'
+}
+
+@test "router: Flutter project detected via pubspec.yaml with flutter dep" {
+  printf 'name: my_app\ndependencies:\n  flutter:\n    sdk: flutter\n' > pubspec.yaml
+  run bash "$SCRIPT"
+  echo "$output" | grep -q 'detected stack=flutter'
+}
+
+@test "router: Dart project detected via pubspec.yaml without flutter dep" {
+  printf 'name: my_lib\nenvironment:\n  sdk: ">=3.0.0 <4.0.0"\n' > pubspec.yaml
+  run bash "$SCRIPT"
+  echo "$output" | grep -q 'detected stack=dart'
+}
+
+@test "router: Swift package detected via Package.swift" {
+  printf '// swift-tools-version:5.9\nimport PackageDescription\nlet package = Package(name: "x", targets: [])\n' > Package.swift
+  run bash "$SCRIPT"
+  echo "$output" | grep -q 'detected stack=swift'
+}
+
+@test "router: Android takes priority over generic gradle when AndroidManifest present" {
+  mkdir -p app/src/main
+  printf '<manifest package="com.example"/>\n' > app/src/main/AndroidManifest.xml
+  printf 'plugins { id("com.android.application") }\n' > build.gradle.kts
+  run bash "$SCRIPT"
+  echo "$output" | grep -q 'detected stack=android-kotlin'
+  echo "$output" | grep -qv 'detected stack=gradle'
+}

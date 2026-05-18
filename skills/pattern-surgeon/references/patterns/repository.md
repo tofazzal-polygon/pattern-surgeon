@@ -173,10 +173,98 @@ final class UserService {
 }
 ```
 
+```kotlin
+data class User(val id: String, val status: String)
+
+interface UserRepository {
+    fun findById(id: String): User?
+    fun save(u: User)
+}
+
+class InMemoryUserRepository : UserRepository {
+    private val store = mutableMapOf<String, User>()
+    override fun findById(id: String): User? = store[id]
+    override fun save(u: User) { store[u.id] = u }
+}
+
+class UserService(private val users: UserRepository) {
+    // service holds only rules; depends on the interface, not the store
+    fun activate(id: String) {
+        val u = users.findById(id) ?: error("not found")
+        require(u.status != "banned") { "banned" }
+        users.save(u.copy(status = "active"))
+    }
+}
+```
+```dart
+class User {
+  final String id;
+  final String status;
+  const User({required this.id, required this.status});
+  User copyWith({String? status}) => User(id: id, status: status ?? this.status);
+}
+
+abstract interface class UserRepository {
+  User? findById(String id);
+  void save(User u);
+}
+
+class InMemoryUserRepository implements UserRepository {
+  final _store = <String, User>{};
+  @override User? findById(String id) => _store[id];
+  @override void save(User u) { _store[u.id] = u; }
+}
+
+class UserService {
+  final UserRepository _users;
+  // service holds only rules; depends on the interface, not the store
+  UserService(this._users);
+
+  void activate(String id) {
+    final u = _users.findById(id);
+    if (u == null) throw StateError('not found');
+    if (u.status == 'banned') throw StateError('banned');
+    _users.save(u.copyWith(status: 'active'));
+  }
+}
+```
+```swift
+struct User { let id: String; var status: String }
+
+protocol UserRepository {
+    func findById(_ id: String) -> User?
+    func save(_ u: User)
+}
+
+class InMemoryUserRepository: UserRepository {
+    private var store: [String: User] = [:]
+    func findById(_ id: String) -> User? { store[id] }
+    func save(_ u: User) { store[u.id] = u }
+}
+
+enum ActivateError: Error { case notFound, banned }
+
+class UserService {
+    private let users: any UserRepository
+    // service holds only rules; depends on the protocol, not the store
+    init(users: any UserRepository) { self.users = users }
+
+    func activate(id: String) throws {
+        guard var u = users.findById(id) else { throw ActivateError.notFound }
+        guard u.status != "banned" else { throw ActivateError.banned }
+        u.status = "active"
+        users.save(u)
+    }
+}
+```
+
 ## Framework idiom
 - Spring Boot: extend Spring Data `JpaRepository<T,ID>`; do not hand-roll a DAO.
 - .NET Core: use EF Core `DbContext`/`DbSet<T>` (optionally a repository over it).
 - Laravel: use an Eloquent model or a repository bound in a ServiceProvider; do not bypass Eloquent.
+- Android/Kotlin: use Room DAO + the Architecture Components repository pattern; do not bypass Room with raw SQL.
+- Flutter/Dart: wrap `drift` (SQLite) or Firestore access behind the repository interface; do not call the DB directly from business logic.
+- Swift/iOS: wrap Core Data `NSManagedObjectContext` or SwiftData `ModelContext` behind the protocol; do not call the context directly from the UI layer.
 
 ## Before / After
 Before: `await db.query("SELECT ...")` inside the service.
