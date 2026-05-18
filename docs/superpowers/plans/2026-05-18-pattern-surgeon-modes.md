@@ -756,10 +756,14 @@ Expected: ALL tests PASS — the original `verify.bats`, `verify-router.bats`,
 the new `ref-modes.bats` and `skill-modes.bats`. Zero failures, zero
 regressions.
 
-- [ ] **Step 2: Confirm pattern refs and scripts are untouched**
+- [ ] **Step 2: Confirm pattern refs and scripts are untouched by the modes work**
 
-Run: `git diff --name-only main..HEAD -- skills/pattern-surgeon/references/patterns skills/pattern-surgeon/scripts`
-Expected: EMPTY output (no pattern ref or script was modified — additive only).
+The modes extension begins at the plan commit `a83d3ea`; the multilang branch
+legitimately modified pattern refs/scripts in earlier commits, so the baseline
+must be the plan commit, not `main`.
+
+Run: `git diff --name-only a83d3ea..HEAD -- skills/pattern-surgeon/references/patterns skills/pattern-surgeon/scripts`
+Expected: EMPTY output (the modes extension touched no pattern ref or script — additive only).
 
 - [ ] **Step 3: Commit (only if Step 1/2 surfaced a fix)**
 
