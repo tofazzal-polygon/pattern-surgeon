@@ -1,6 +1,7 @@
 SKILL="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/SKILL.md"
 
 @test "SKILL.md has an Intent routing section with all five modes" {
+  [ -f "$SKILL" ]
   grep -qF "## Intent routing" "$SKILL"
   for m in suggest refactor compare follow greenfield; do
     grep -qF "\`$m\`" "$SKILL" || { echo "MISSING mode: $m"; false; }
@@ -10,6 +11,7 @@ SKILL="$BATS_TEST_DIRNAME/../../skills/pattern-surgeon/SKILL.md"
 }
 
 @test "SKILL.md description front matter covers new modes and languages" {
+  [ -f "$SKILL" ]
   hdr="$(sed -n '1,5p' "$SKILL")"
   echo "$hdr" | grep -qiF "compare"
   echo "$hdr" | grep -qiF "match existing"

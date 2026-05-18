@@ -6,7 +6,7 @@ description: Use when the user names a TS/JS/Python/Java/C#/PHP file or function
 # pattern-surgeon
 
 ## When to use
-User points at a TS/JS scope (file/function/class) and asks what pattern fits,
+User points at a code scope in any supported language (see ## Language & framework detection) (file/function/class) and asks what pattern fits,
 says it is messy/has a big switch, or asks to refactor to a pattern. Reactive
 only — never scan the whole repo unprompted.
 
