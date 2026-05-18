@@ -41,6 +41,22 @@ Framework when-NOT (suppress hand-rolled machinery):
 - Swift/iOS → do NOT hand-roll an Observer subject when Combine is available;
   prefer `@Environment`/`@EnvironmentObject` for SwiftUI dependency passing.
 
+## Lazy Loading Protocol
+Pattern reference files are large. Load them only when needed — never
+speculatively. The inline Detection rules table below is sufficient for
+initial candidate matching without reading any pattern file.
+
+| Mode | Load on activation | Load after detection |
+|---|---|---|
+| `suggest` | Nothing beyond SKILL.md | Nothing — inline Detection rules are sufficient for a read-only recommendation |
+| `refactor` | `references/safety-harness.md` | `references/patterns/<matched>.md` only, after step 2 confirms a match |
+| `compare` | `references/comparison-rubric.md` | `references/patterns/<candidate>.md` for each candidate with smell-match > 0 only |
+| `follow` | `references/safety-harness.md` (if applying) | `references/patterns/<detected>.md` for each convention found in scope only |
+| `greenfield` | `references/comparison-rubric.md` + `references/greenfield-tdd.md` + `references/safety-harness.md` | `references/patterns/<selected>.md` after pattern selection only |
+
+Never load all 6 pattern files simultaneously unless every pattern scored smell-match > 0
+in the Detection rules pass. Loading one pattern file instead of all six saves ~10 000 tokens.
+
 ## Intent routing
 Before the Procedure, map the request to exactly one mode. Ambiguous between
 two modes → ASK the user which; never guess.
@@ -59,12 +75,14 @@ rules are shared by every mode.
 
 ## Procedure
 1. Read the named scope only.
-2. Match against the 6 detection rules below. Confirm the smell AND that no
-   "When NOT to apply" case holds (see `references/patterns/<name>.md`).
+2. Match against the 6 Detection rules below using only the inline table
+   (no pattern file reads yet). Confirm the smell AND that no "Suppress when"
+   case holds. If a pattern matches, then load `references/patterns/<name>.md`
+   to confirm "When NOT to apply" and retrieve the Transform recipe.
 3. If ambiguous or two patterns plausible, ASK the user before editing. Never
    apply two patterns in one pass.
 4. State: pattern, why, tradeoff, the when-NOT you ruled out.
-5. On user OK, follow `references/safety-harness.md` exactly.
+5. On user OK, load `references/safety-harness.md` and follow it exactly.
 
 ## Detection rules
 | Pattern | Fire when | Suppress when |
@@ -80,27 +98,47 @@ rules are shared by every mode.
 
 ### compare (read-only)
 1. Read the named scope only.
-2. Run all 6 Detection rules; keep patterns that plausibly fit (smell present or
-   near-miss). Drop the rest.
-3. Score each candidate per `references/comparison-rubric.md`; render the
-   matrix (pattern | why-fits-here | tradeoff | when-NOT ruled | verdict).
-4. Recommend one + one line on why it beats the runner-up. Exact tie → state
+2. Run all 6 Detection rules (inline table, no file reads yet); keep patterns
+   that plausibly fit (smell present or near-miss). Drop the rest.
+3. Load `references/comparison-rubric.md`. For each candidate, load
+   `references/patterns/<candidate>.md` only — not all six.
+4. Score each candidate per the rubric; render the matrix
+   (pattern | why-fits-here | tradeoff | when-NOT ruled | verdict).
+5. Recommend one + one line on why it beats the runner-up. Exact tie → state
    the tie and ASK the user to pick.
-5. No code change. If the user then says go, chain into `refactor`; if no
+6. No code change. If the user then says go, chain into `refactor`; if no
    code exists yet, chain into `greenfield`.
 
 ### follow (user-triggered scoped scan)
-1. Only on an explicit "match existing / make consistent" request (keeps the
-   reactive rule). Scope = the named file + sibling files in the same
-   directory + the nearest layer directory (e.g. `services/`). Hard cap — no
-   repo-wide walk.
-2. Census which of the 6 patterns already appear in scope; note local
-   conventions (naming, DI style, framework idiom in use).
-3. The recommendation must conform to the detected convention. If the textbook
-   pattern conflicts with house style, follow house style and state the
-   deviation explicitly.
+Only on an explicit "match existing / make consistent" request (keeps the
+reactive rule).
+
+**Scope algorithm** — run in this order; stop at the first match:
+1. Start at the directory of the named file.
+2. If that directory's name matches a recognized layer pattern
+   (`services`, `repositories`, `adapters`, `use-cases`, `usecases`,
+   `features`, `data`, `ui`, `presentation`, `domain`, `application`,
+   `infrastructure`, `handlers`, `controllers`, `models`, `stores`,
+   `providers`, `blocs`, `viewmodels`, `widgets`) → that directory IS
+   the layer scope.
+3. Otherwise check the immediate parent directory; if it matches a layer
+   pattern above → use that.
+4. If neither matches → use the named file's immediate directory.
+5. Hard caps: max 3 directory levels up from the named file; max 20 files
+   in scope; never cross a project root (directory containing
+   `package.json`, `pubspec.yaml`, `pom.xml`, `Package.swift`, or
+   equivalent).
+
+**Census and recommendation:**
+1. Run the inline Detection rules against all files in scope (no pattern
+   file reads yet). Record which patterns appear by structure and naming.
+2. Load `references/patterns/<detected>.md` only for each convention found.
+3. The recommendation must conform to the detected convention. If the
+   textbook pattern conflicts with house style, follow house style and state
+   the deviation explicitly.
 4. No pattern detectable in scope → say so; fall back to `suggest`.
-5. If the user wants the edit applied, follow `references/safety-harness.md`.
+5. If the user wants the edit applied, load `references/safety-harness.md`
+   and follow it exactly.
 
 ### greenfield (TDD-first)
 Follow `references/greenfield-tdd.md` exactly (it is authoritative for every

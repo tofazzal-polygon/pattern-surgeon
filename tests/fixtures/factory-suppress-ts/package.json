@@ -1,0 +1,5 @@
+{
+  "name": "factory-suppress-ts",
+  "scripts": { "test": "node -e \"process.exit(0)\"" },
+  "devDependencies": { "typescript": "*" }
+}
