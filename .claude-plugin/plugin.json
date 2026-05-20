@@ -1,10 +1,17 @@
 {
   "name": "pattern-surgeon",
-  "description": "Reactive design-pattern skill for Claude Code. Recommends, applies, and auto-reverts Strategy/Factory/Adapter/Repository/Observer/DI across TypeScript, Python, Java, C#, PHP, Kotlin, Dart, and Swift. Five modes: suggest, refactor, compare, follow, greenfield.",
+  "description": "Reactive design-pattern skill for Claude Code. Recommends, applies, and auto-reverts Strategy, Factory, Adapter, Repository, Observer, and Dependency Injection across TypeScript, JavaScript, Python, Java, C#, PHP, Kotlin, Dart, and Swift. Five modes: suggest, refactor, compare, follow, greenfield. Uses only Bash and Read tools. No network access. No repo scanning. Reads only the file you name. Code-mutating modes use a git checkpoint → verify → rollback safety contract.",
   "version": "1.0.0",
   "author": {
-    "name": "nuhin13"
+    "name": "Nuhin",
+    "url": "https://github.com/nuhin13"
   },
   "homepage": "https://github.com/nuhin13/pattern-surgeon",
-  "license": "MIT"
+  "license": "MIT",
+  "allowedTools": ["Bash", "Read"],
+  "permissions": {
+    "filesystem": "read-only (named file only)",
+    "network": "none",
+    "shell": "verify.sh, checkpoint.sh, rollback.sh only"
+  }
 }
