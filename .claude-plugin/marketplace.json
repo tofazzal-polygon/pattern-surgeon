@@ -9,7 +9,11 @@
     {
       "name": "pattern-surgeon",
       "description": "Reactive design-pattern skill for Claude Code. Recommends, applies, and auto-reverts Strategy, Factory, Adapter, Repository, Observer, and Dependency Injection across 9 language stacks (TypeScript, JavaScript, Python, Java, C#, PHP, Kotlin, Dart, Swift). Five modes: suggest, refactor, compare, follow, greenfield. Code-mutating modes use a git checkpoint → verify → rollback safety contract. No network access. No repo scanning. Reads only the file you name.",
-      "source": ".",
+      "source": {
+        "source": "github",
+        "repo": "nuhin13/pattern-surgeon",
+        "ref": "main"
+      },
       "version": "1.0.0",
       "homepage": "https://github.com/nuhin13/pattern-surgeon",
       "tags": ["refactoring", "design-patterns", "typescript", "python", "java", "kotlin", "dart", "swift", "mobile", "strategy", "factory", "repository"]
