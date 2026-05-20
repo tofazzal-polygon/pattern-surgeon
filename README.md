@@ -15,22 +15,19 @@ Typecheck + tests must stay green — or the change is rolled back automatically
 
 ## Install
 
-### Option 1 — Claude Code plugin (recommended)
-
-In a Claude Code session, type:
+### Option 1 — Claude Code plugin (one command)
 
 ```
-/plugin marketplace add nuhin13/pattern-surgeon
-/plugin install pattern-surgeon
+/plugin install nuhin13/pattern-surgeon
 ```
 
-Done. The skill activates automatically from its description — no slash command needed.
+The skill activates automatically from its description — no slash command needed.
 
-### Option 2 — npx (one-liner, global)
+### Option 2 — npx (no Node project required)
 
 ```bash
 npx @nuhin13/pattern-surgeon          # installs to ~/.claude/skills/
-npx @nuhin13/pattern-surgeon --project # installs to .claude/skills/ (current project)
+npx @nuhin13/pattern-surgeon --project # installs to .claude/skills/ (current project only)
 ```
 
 ### Option 3 — npm global
@@ -110,8 +107,8 @@ Maximum one auto-retry. Never loops.
 ## Uninstall
 
 ```bash
-npx @nuhin13/pattern-surgeon remove              # global
-npx @nuhin13/pattern-surgeon remove --project    # project-local
+npx @nuhin13/pattern-surgeon remove           # global
+npx @nuhin13/pattern-surgeon remove --project # project-local
 ```
 
 ---

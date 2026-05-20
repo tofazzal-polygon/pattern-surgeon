@@ -1,0 +1,10 @@
+{
+  "name": "pattern-surgeon",
+  "description": "Reactive design-pattern skill for Claude Code. Recommends, applies, and auto-reverts Strategy/Factory/Adapter/Repository/Observer/DI across TypeScript, Python, Java, C#, PHP, Kotlin, Dart, and Swift. Five modes: suggest, refactor, compare, follow, greenfield.",
+  "version": "1.0.0",
+  "author": {
+    "name": "nuhin13"
+  },
+  "homepage": "https://github.com/nuhin13/pattern-surgeon",
+  "license": "MIT"
+}

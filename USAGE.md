@@ -8,13 +8,10 @@
 
 ## Install
 
-### Option 1 — Claude Code plugin (recommended, one command)
-
-In a Claude Code session type:
+### Option 1 — Claude Code plugin (one command)
 
 ```
-/plugin marketplace add nuhin13/pattern-surgeon
-/plugin install pattern-surgeon
+/plugin install nuhin13/pattern-surgeon
 ```
 
 The skill activates automatically. No slash command needed — just talk to Claude.
@@ -31,17 +28,17 @@ The skill activates automatically. No slash command needed — just talk to Clau
 
 ---
 
-### Option 2 — npx (no install required)
+### Option 2 — npx (no Node project required)
 
 ```bash
-# Global — use in any project
+# Global — available in all your projects
 npx @nuhin13/pattern-surgeon
 
-# Project-local — current project only, committable to git
+# Project-local — this project only, committable to git
 npx @nuhin13/pattern-surgeon --project
 ```
 
-After running, restart Claude Code (or open a new session).
+Restart Claude Code after running (or open a new session).
 
 **Help:**
 ```bash
@@ -51,6 +48,7 @@ npx @nuhin13/pattern-surgeon --help
 **Uninstall:**
 ```bash
 npx @nuhin13/pattern-surgeon remove
+npx @nuhin13/pattern-surgeon remove --project
 ```
 
 ---
@@ -95,7 +93,6 @@ Claude Code picks it up automatically when you open this directory — no instal
 |---|---|---|
 | Global | `~/.claude/skills/pattern-surgeon/` | All your projects |
 | Project | `.claude/skills/pattern-surgeon/` | This project only |
-| Plugin | Managed by `/plugin` command | Where plugin is enabled |
 
 ---
 
