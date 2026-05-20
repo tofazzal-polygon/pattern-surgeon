@@ -1,6 +1,6 @@
 {
   "name": "nuhin13",
-  "description": "Open-source Claude Code plugins by nuhin13",
+  "description": "Open-source Claude Code plugins by nuhin13. All plugins are plain Markdown skills with no compiled code, no MCP servers, and no network access. Source is fully auditable on GitHub.",
   "owner": {
     "name": "Nuhin",
     "url": "https://github.com/nuhin13"
@@ -8,10 +8,11 @@
   "plugins": [
     {
       "name": "pattern-surgeon",
-      "description": "Reactive design-pattern skill. Recommends, applies, and auto-reverts 6 design patterns across 9 language stacks (TS/JS, Python, Java, C#, PHP, Kotlin, Dart, Flutter, Swift). Verify-or-revert safety on every refactor.",
-      "path": ".",
+      "description": "Reactive design-pattern skill for Claude Code. Recommends, applies, and auto-reverts Strategy, Factory, Adapter, Repository, Observer, and Dependency Injection across 9 language stacks (TypeScript, JavaScript, Python, Java, C#, PHP, Kotlin, Dart, Swift). Five modes: suggest, refactor, compare, follow, greenfield. Code-mutating modes use a git checkpoint → verify → rollback safety contract. No network access. No repo scanning. Reads only the file you name.",
+      "source": ".",
       "version": "1.0.0",
-      "tags": ["refactoring", "design-patterns", "typescript", "python", "java", "kotlin", "dart", "swift", "mobile"]
+      "homepage": "https://github.com/nuhin13/pattern-surgeon",
+      "tags": ["refactoring", "design-patterns", "typescript", "python", "java", "kotlin", "dart", "swift", "mobile", "strategy", "factory", "repository"]
     }
   ]
 }
