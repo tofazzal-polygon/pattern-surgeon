@@ -8,12 +8,27 @@
 
 ## Install
 
-> **Note on Claude Code plugins:** The `/plugin` system installs MCP server plugins
-> (which add tools). Skills are different — they install directly into
-> `~/.claude/skills/` and Claude picks them up automatically from their `description:`
-> frontmatter. Use any option below; no `/plugin` command needed.
+### Option 1 — Claude Code plugin (one command)
 
-### Option 1 — npx (recommended, no install required)
+```
+/plugin install nuhin13/pattern-surgeon
+```
+
+The skill activates automatically. No slash command needed — just talk to Claude.
+
+**To update:**
+```
+/plugin update pattern-surgeon
+```
+
+**To uninstall:**
+```
+/plugin remove pattern-surgeon
+```
+
+---
+
+### Option 2 — npx (no Node project required)
 
 ```bash
 # Global — available in all your projects
@@ -38,7 +53,7 @@ npx @nuhin13/pattern-surgeon remove --project
 
 ---
 
-### Option 2 — npm global install
+### Option 3 — npm global install
 
 ```bash
 npm install -g @nuhin13/pattern-surgeon
@@ -47,7 +62,7 @@ npm install -g @nuhin13/pattern-surgeon
 
 ---
 
-### Option 3 — shell one-liner
+### Option 4 — shell one-liner
 
 ```bash
 # Global
@@ -60,7 +75,7 @@ git add .claude/skills/pattern-surgeon && git commit -m "add pattern-surgeon ski
 
 ---
 
-### Option 4 — clone the repo (zero install)
+### Option 5 — clone the repo (zero install)
 
 ```bash
 git clone https://github.com/nuhin13/pattern-surgeon

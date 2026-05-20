@@ -15,28 +15,28 @@ Typecheck + tests must stay green — or the change is rolled back automatically
 
 ## Install
 
-> **Note on Claude Code plugins:** The `/plugin` system is for MCP server plugins
-> (tools), not skill files. Skills install directly into `~/.claude/skills/` — use
-> any option below.
+### Option 1 — Claude Code plugin (one command)
 
-### Option 1 — npx (recommended, no install required)
+```
+/plugin install nuhin13/pattern-surgeon
+```
+
+The skill activates automatically from its description — no slash command needed.
+
+### Option 2 — npx (no Node project required)
 
 ```bash
 npx @nuhin13/pattern-surgeon          # installs to ~/.claude/skills/
 npx @nuhin13/pattern-surgeon --project # installs to .claude/skills/ (current project only)
 ```
 
-Restart Claude Code after running. No Node.js project needed — works anywhere.
-
-### Option 2 — npm global
+### Option 3 — npm global
 
 ```bash
 npm install -g @nuhin13/pattern-surgeon
 ```
 
-Installs automatically via postinstall hook to `~/.claude/skills/`.
-
-### Option 3 — shell one-liner
+### Option 4 — shell one-liner
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/nuhin13/pattern-surgeon/main/install.sh | bash
@@ -49,7 +49,7 @@ curl -fsSL https://raw.githubusercontent.com/nuhin13/pattern-surgeon/main/instal
 git add .claude/skills/pattern-surgeon && git commit -m "add pattern-surgeon skill"
 ```
 
-### Option 4 — already in this repo (zero install for contributors)
+### Option 5 — already in this repo (zero install for contributors)
 
 When you clone this repo, `.claude/skills/pattern-surgeon` is a symlink to
 `skills/pattern-surgeon/`. Claude Code picks it up automatically — no install step.
