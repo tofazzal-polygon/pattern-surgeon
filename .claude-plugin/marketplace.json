@@ -1,0 +1,11 @@
+{
+  "plugins": [
+    {
+      "name": "pattern-surgeon",
+      "source": {
+        "source": "github",
+        "repo": "nuhin13/pattern-surgeon"
+      }
+    }
+  ]
+}

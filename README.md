@@ -15,10 +15,13 @@ Typecheck + tests must stay green — or the change is rolled back automatically
 
 ## Install
 
-### Option 1 — Claude Code plugin (one command)
+### Option 1 — Claude Code plugin
+
+In a Claude Code session, run these two commands:
 
 ```
-/plugin install nuhin13/pattern-surgeon
+/plugin marketplace add nuhin13/pattern-surgeon
+/plugin install pattern-surgeon
 ```
 
 The skill activates automatically from its description — no slash command needed.

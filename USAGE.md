@@ -8,10 +8,13 @@
 
 ## Install
 
-### Option 1 — Claude Code plugin (one command)
+### Option 1 — Claude Code plugin
+
+In a Claude Code session, run these two commands:
 
 ```
-/plugin install nuhin13/pattern-surgeon
+/plugin marketplace add nuhin13/pattern-surgeon
+/plugin install pattern-surgeon
 ```
 
 The skill activates automatically. No slash command needed — just talk to Claude.
