@@ -15,31 +15,28 @@ Typecheck + tests must stay green — or the change is rolled back automatically
 
 ## Install
 
-### Option 1 — Claude Code plugin (recommended)
+> **Note on Claude Code plugins:** The `/plugin` system is for MCP server plugins
+> (tools), not skill files. Skills install directly into `~/.claude/skills/` — use
+> any option below.
 
-In a Claude Code session, type:
-
-```
-/plugin marketplace add nuhin13/pattern-surgeon
-/plugin install pattern-surgeon
-```
-
-Done. The skill activates automatically from its description — no slash command needed.
-
-### Option 2 — npx (one-liner, global)
+### Option 1 — npx (recommended, no install required)
 
 ```bash
 npx @nuhin13/pattern-surgeon          # installs to ~/.claude/skills/
-npx @nuhin13/pattern-surgeon --project # installs to .claude/skills/ (current project)
+npx @nuhin13/pattern-surgeon --project # installs to .claude/skills/ (current project only)
 ```
 
-### Option 3 — npm global
+Restart Claude Code after running. No Node.js project needed — works anywhere.
+
+### Option 2 — npm global
 
 ```bash
 npm install -g @nuhin13/pattern-surgeon
 ```
 
-### Option 4 — shell one-liner
+Installs automatically via postinstall hook to `~/.claude/skills/`.
+
+### Option 3 — shell one-liner
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/nuhin13/pattern-surgeon/main/install.sh | bash
@@ -52,7 +49,7 @@ curl -fsSL https://raw.githubusercontent.com/nuhin13/pattern-surgeon/main/instal
 git add .claude/skills/pattern-surgeon && git commit -m "add pattern-surgeon skill"
 ```
 
-### Option 5 — already in this repo (zero install for contributors)
+### Option 4 — already in this repo (zero install for contributors)
 
 When you clone this repo, `.claude/skills/pattern-surgeon` is a symlink to
 `skills/pattern-surgeon/`. Claude Code picks it up automatically — no install step.
@@ -110,8 +107,8 @@ Maximum one auto-retry. Never loops.
 ## Uninstall
 
 ```bash
-npx @nuhin13/pattern-surgeon remove              # global
-npx @nuhin13/pattern-surgeon remove --project    # project-local
+npx @nuhin13/pattern-surgeon remove           # global
+npx @nuhin13/pattern-surgeon remove --project # project-local
 ```
 
 ---

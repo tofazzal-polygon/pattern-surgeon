@@ -8,40 +8,22 @@
 
 ## Install
 
-### Option 1 — Claude Code plugin (recommended, one command)
+> **Note on Claude Code plugins:** The `/plugin` system installs MCP server plugins
+> (which add tools). Skills are different — they install directly into
+> `~/.claude/skills/` and Claude picks them up automatically from their `description:`
+> frontmatter. Use any option below; no `/plugin` command needed.
 
-In a Claude Code session type:
-
-```
-/plugin marketplace add nuhin13/pattern-surgeon
-/plugin install pattern-surgeon
-```
-
-The skill activates automatically. No slash command needed — just talk to Claude.
-
-**To update:**
-```
-/plugin update pattern-surgeon
-```
-
-**To uninstall:**
-```
-/plugin remove pattern-surgeon
-```
-
----
-
-### Option 2 — npx (no install required)
+### Option 1 — npx (recommended, no install required)
 
 ```bash
-# Global — use in any project
+# Global — available in all your projects
 npx @nuhin13/pattern-surgeon
 
-# Project-local — current project only, committable to git
+# Project-local — this project only, committable to git
 npx @nuhin13/pattern-surgeon --project
 ```
 
-After running, restart Claude Code (or open a new session).
+Restart Claude Code after running (or open a new session).
 
 **Help:**
 ```bash
@@ -51,11 +33,12 @@ npx @nuhin13/pattern-surgeon --help
 **Uninstall:**
 ```bash
 npx @nuhin13/pattern-surgeon remove
+npx @nuhin13/pattern-surgeon remove --project
 ```
 
 ---
 
-### Option 3 — npm global install
+### Option 2 — npm global install
 
 ```bash
 npm install -g @nuhin13/pattern-surgeon
@@ -64,7 +47,7 @@ npm install -g @nuhin13/pattern-surgeon
 
 ---
 
-### Option 4 — shell one-liner
+### Option 3 — shell one-liner
 
 ```bash
 # Global
@@ -77,7 +60,7 @@ git add .claude/skills/pattern-surgeon && git commit -m "add pattern-surgeon ski
 
 ---
 
-### Option 5 — clone the repo (zero install)
+### Option 4 — clone the repo (zero install)
 
 ```bash
 git clone https://github.com/nuhin13/pattern-surgeon
@@ -95,7 +78,6 @@ Claude Code picks it up automatically when you open this directory — no instal
 |---|---|---|
 | Global | `~/.claude/skills/pattern-surgeon/` | All your projects |
 | Project | `.claude/skills/pattern-surgeon/` | This project only |
-| Plugin | Managed by `/plugin` command | Where plugin is enabled |
 
 ---
 
