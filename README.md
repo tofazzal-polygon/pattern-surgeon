@@ -6,7 +6,6 @@
 
 Native for **Claude Code** · Compatible with Codex CLI · Aider · Gemini CLI · Cursor · Windsurf · Continue
 
-[![tests](https://github.com/nuhin13/pattern-surgeon/actions/workflows/test.yml/badge.svg)](https://github.com/nuhin13/pattern-surgeon/actions/workflows/test.yml)
 [![npm version](https://img.shields.io/npm/v/@nuhin13/pattern-surgeon?color=crimson)](https://www.npmjs.com/package/@nuhin13/pattern-surgeon)
 [![license](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 [![claude-code](https://img.shields.io/badge/claude--code-plugin-5B21D8)](https://github.com/nuhin13/pattern-surgeon)
