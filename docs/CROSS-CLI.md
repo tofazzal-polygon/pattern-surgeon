@@ -6,6 +6,26 @@ out-of-the-box elsewhere and what needs adaptation.
 
 ---
 
+## Step 0 — Get the files (all non-Claude CLIs)
+
+Before using pattern-surgeon with any other CLI, install the skill files into your project:
+
+```bash
+npx @nuhin13/pattern-surgeon --project
+```
+
+This creates `.claude/skills/pattern-surgeon/` in your current directory with all skill
+files, pattern guides, and safety scripts. All CLI examples below reference this path.
+
+Alternatively, clone the repo directly:
+
+```bash
+git clone https://github.com/nuhin13/pattern-surgeon
+# files land at pattern-surgeon/skills/pattern-surgeon/
+```
+
+---
+
 ## TL;DR
 
 | Component | Claude Code | Other CLIs |
@@ -17,21 +37,25 @@ out-of-the-box elsewhere and what needs adaptation.
 | Multi-language detection | Native | Portable (scripts do the detection) |
 
 The shell scripts are **100% CLI-agnostic**. Any LLM CLI can call them via
-tool-use or shell execution. The skill's auto-invocation mechanism is what
-differs.
+tool-use or shell execution. The skill's auto-invocation mechanism is what differs.
 
 ---
 
 ## Claude Code (native)
 
-No adaptation needed. Install as described in `USAGE.md`.
+No adaptation needed. Install via the plugin system or npx:
 
 ```bash
-ln -s "$PWD/pattern-surgeon/skills/pattern-surgeon" \
-      ~/.claude/skills/pattern-surgeon
+# Plugin (recommended)
+/plugin marketplace add nuhin13/pattern-surgeon
+/plugin install pattern-surgeon
+
+# npx
+npx @nuhin13/pattern-surgeon           # global
+npx @nuhin13/pattern-surgeon --project # project-local
 ```
 
-The `---name: pattern-surgeon---` frontmatter in `SKILL.md` makes the skill
+The `name: pattern-surgeon` frontmatter in `SKILL.md` makes the skill
 auto-discoverable. Claude selects it from the `description:` when the user's
 request matches.
 
@@ -39,48 +63,53 @@ request matches.
 
 ## OpenCode (open-source)
 
-OpenCode follows the Claude Code skill format. If your version of OpenCode
-supports the `skills/` path, the install is identical to Claude Code:
+OpenCode follows the Claude Code skill format. If your version supports the `skills/` path:
 
 ```bash
-ln -s "$PWD/pattern-surgeon/skills/pattern-surgeon" \
-      ~/.opencode/skills/pattern-surgeon
+npx @nuhin13/pattern-surgeon --project
+# skill is now at .claude/skills/pattern-surgeon/ — OpenCode picks it up automatically
 ```
 
-If OpenCode does not yet support skill frontmatter, use the system-prompt
-approach below.
+If OpenCode does not yet support skill frontmatter, use the system-prompt approach
+from the Codex CLI section below.
 
 ---
 
 ## Codex CLI (OpenAI)
 
-Codex CLI does not have a skill system. Adapt as follows:
+Codex CLI does not have a skill system. First install the files, then feed them manually.
+
+**Step 0 — install files:**
+
+```bash
+npx @nuhin13/pattern-surgeon --project
+```
 
 **1. Feed SKILL.md as a system prompt:**
 
 ```bash
-codex --system-prompt "$(cat skills/pattern-surgeon/SKILL.md)" \
+codex --system-prompt "$(cat .claude/skills/pattern-surgeon/SKILL.md)" \
       "Refactor src/checkout.ts — it has a big if-else"
 ```
 
-**2. Feed pattern files as needed context:**
+**2. Feed a pattern file as extra context:**
 
 ```bash
-codex --system-prompt "$(cat skills/pattern-surgeon/SKILL.md)" \
-      --context "$(cat skills/pattern-surgeon/references/patterns/strategy.md)" \
+codex --system-prompt "$(cat .claude/skills/pattern-surgeon/SKILL.md)" \
+      --context "$(cat .claude/skills/pattern-surgeon/references/patterns/strategy.md)" \
       "Apply Strategy to src/checkout.ts"
 ```
 
-**3. Use the shell scripts directly:**
+**3. Run the safety scripts manually:**
 
 ```bash
-# Before refactoring
-SHA=$(bash skills/pattern-surgeon/scripts/checkpoint.sh)
+# Before the LLM edits
+SHA=$(bash .claude/skills/pattern-surgeon/scripts/checkpoint.sh)
 
 # After the LLM applies edits
-bash skills/pattern-surgeon/scripts/verify.sh
+bash .claude/skills/pattern-surgeon/scripts/verify.sh
 if [ $? -ne 0 ]; then
-  bash skills/pattern-surgeon/scripts/rollback.sh "$SHA"
+  bash .claude/skills/pattern-surgeon/scripts/rollback.sh "$SHA"
 fi
 ```
 
@@ -89,61 +118,144 @@ checkpoint/verify/rollback. The LLM provides the edit; the scripts verify it.
 
 ---
 
-## Cursor (IDE)
-
-Cursor uses `.cursorrules` or system-prompt injection, not a CLI skill system.
-
-**Add to `.cursorrules`:**
-
-```
-# pattern-surgeon
-When the user asks about design patterns, what pattern fits, or asks to
-refactor to a pattern, follow this skill:
-
-[paste contents of skills/pattern-surgeon/SKILL.md here]
-
-Pattern reference files are at skills/pattern-surgeon/references/patterns/.
-Safety scripts are at skills/pattern-surgeon/scripts/.
-```
-
-Cursor can execute shell commands via its terminal integration. The
-`verify.sh` / `checkpoint.sh` / `rollback.sh` scripts work unchanged.
-
----
-
 ## Aider
 
-Aider reads context from files you add explicitly. The pattern guides and
-SKILL.md work as read-only context.
+Aider reads context from files you add explicitly. The pattern guides and SKILL.md
+work as read-only context.
+
+**Step 0 — install files:**
 
 ```bash
-aider --read skills/pattern-surgeon/SKILL.md \
-      --read skills/pattern-surgeon/references/patterns/strategy.md \
+npx @nuhin13/pattern-surgeon --project
+```
+
+**Run aider with skill context:**
+
+```bash
+aider --read .claude/skills/pattern-surgeon/SKILL.md \
+      --read .claude/skills/pattern-surgeon/references/patterns/strategy.md \
       src/checkout.ts
 ```
 
-Then prompt: `"Refactor the pricing logic to Strategy pattern, following the
-Transform recipe in the SKILL.md context."`
+Then prompt: `"Refactor the pricing logic to Strategy pattern, following the Transform recipe in the SKILL.md context."`
 
-Run the safety scripts manually before and after the edit:
+**Safety scripts:**
 
 ```bash
-SHA=$(bash skills/pattern-surgeon/scripts/checkpoint.sh)
+SHA=$(bash .claude/skills/pattern-surgeon/scripts/checkpoint.sh)
 # ... aider applies the edit ...
-bash skills/pattern-surgeon/scripts/verify.sh || \
-  bash skills/pattern-surgeon/scripts/rollback.sh "$SHA"
+bash .claude/skills/pattern-surgeon/scripts/verify.sh || \
+  bash .claude/skills/pattern-surgeon/scripts/rollback.sh "$SHA"
 ```
 
 ---
 
 ## Gemini CLI
 
-Same approach as Codex CLI — feed SKILL.md as system context:
+Same approach as Codex CLI — feed SKILL.md as system context.
+
+**Step 0 — install files:**
 
 ```bash
-gemini --system "$(cat skills/pattern-surgeon/SKILL.md)" \
+npx @nuhin13/pattern-surgeon --project
+```
+
+**Run:**
+
+```bash
+gemini --system "$(cat .claude/skills/pattern-surgeon/SKILL.md)" \
        "What pattern fits lib/pricing.dart?"
 ```
+
+---
+
+## Cursor (IDE)
+
+Cursor uses `.cursorrules` or system-prompt injection, not a CLI skill system.
+
+**Step 0 — install files:**
+
+```bash
+npx @nuhin13/pattern-surgeon --project
+```
+
+**Add to `.cursorrules` at your project root:**
+
+```
+# pattern-surgeon
+When the user asks about design patterns, what pattern fits, or asks to
+refactor to a pattern, follow this skill:
+
+[paste contents of .claude/skills/pattern-surgeon/SKILL.md here]
+
+Pattern reference files are at .claude/skills/pattern-surgeon/references/patterns/.
+Safety scripts are at .claude/skills/pattern-surgeon/scripts/.
+```
+
+Cursor can execute shell commands via its terminal integration.
+The `verify.sh` / `checkpoint.sh` / `rollback.sh` scripts work unchanged.
+
+---
+
+## Windsurf (Codeium)
+
+Windsurf uses `.windsurfrules` — same format as `.cursorrules`.
+
+**Step 0 — install files:**
+
+```bash
+npx @nuhin13/pattern-surgeon --project
+```
+
+**Add to `.windsurfrules` at your project root:**
+
+```
+# pattern-surgeon
+When the user asks about design patterns, what pattern fits, or asks to
+refactor to a pattern, follow this skill:
+
+[paste contents of .claude/skills/pattern-surgeon/SKILL.md here]
+
+Pattern reference files are at .claude/skills/pattern-surgeon/references/patterns/.
+Safety scripts are at .claude/skills/pattern-surgeon/scripts/.
+```
+
+---
+
+## Continue.dev (VS Code / JetBrains)
+
+Continue uses a `config.json` in `~/.continue/`. You can inject SKILL.md as a
+system message and reference pattern files via context providers.
+
+**Step 0 — install files:**
+
+```bash
+npx @nuhin13/pattern-surgeon --project
+```
+
+**Add to `~/.continue/config.json`:**
+
+```json
+{
+  "models": [...],
+  "systemMessage": "<paste contents of .claude/skills/pattern-surgeon/SKILL.md here>",
+  "contextProviders": [
+    {
+      "name": "file",
+      "params": {}
+    }
+  ]
+}
+```
+
+Then in a Continue chat, use `@file` to attach a specific pattern guide:
+
+```
+@.claude/skills/pattern-surgeon/references/patterns/strategy.md
+Refactor src/checkout.ts to Strategy pattern.
+```
+
+Run safety scripts manually the same way as Aider/Codex above.
 
 ---
 
@@ -164,7 +276,7 @@ gemini --system "$(cat skills/pattern-surgeon/SKILL.md)" \
 Add the scripts to your PATH for convenience:
 
 ```bash
-export PATH="$PATH:$PWD/pattern-surgeon/skills/pattern-surgeon/scripts"
+export PATH="$PATH:$PWD/.claude/skills/pattern-surgeon/scripts"
 ```
 
 Then any session can call `verify.sh`, `checkpoint.sh`, `rollback.sh` directly.
