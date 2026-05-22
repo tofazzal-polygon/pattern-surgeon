@@ -1,10 +1,21 @@
+<div align="center">
+
 # pattern-surgeon
 
-Reactive design-pattern skill for Claude Code. Point it at a file; it recommends,
-applies, and auto-reverts one of six patterns across nine language stacks.
-Typecheck + tests must stay green — or the change is rolled back automatically.
+**Point it at a file. Get a scored decision. Auto-revert if tests fail.**
 
-Also works with Codex CLI, Aider, Gemini CLI, Cursor, Windsurf, and Continue — see [docs/CROSS-CLI.md](docs/CROSS-CLI.md).
+Native for **Claude Code** · Compatible with Codex CLI · Aider · Gemini CLI · Cursor · Windsurf · Continue
+
+[![tests](https://github.com/nuhin13/pattern-surgeon/actions/workflows/test.yml/badge.svg)](https://github.com/nuhin13/pattern-surgeon/actions/workflows/test.yml)
+[![npm version](https://img.shields.io/npm/v/@nuhin13/pattern-surgeon?color=crimson)](https://www.npmjs.com/package/@nuhin13/pattern-surgeon)
+[![license](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
+[![claude-code](https://img.shields.io/badge/claude--code-plugin-5B21D8)](https://github.com/nuhin13/pattern-surgeon)
+[![languages](https://img.shields.io/badge/languages-9-orange)](https://github.com/nuhin13/pattern-surgeon)
+[![patterns](https://img.shields.io/badge/patterns-6-blue)](https://github.com/nuhin13/pattern-surgeon)
+
+</div>
+
+---
 
 ```
 "What pattern fits src/checkout.ts?"
