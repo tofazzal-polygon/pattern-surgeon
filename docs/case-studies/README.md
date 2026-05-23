@@ -17,7 +17,7 @@ the recommendation was applied and verified.
 | # | Case | Pattern | Scope | LOC delta |
 |---|---|---|---|---|
 | 01 | [Interview microservice — adaptive routing](./01-interview-module-strategy.md) | Strategy (9/10) | Python / FastAPI / gRPC | -20 net |
-
+| 02 | [A Next.js editor route — suppression verdict & depth discipline](./02-editor-route-suppression.md) | None (all 6 suppressed) | TypeScript / Next.js 16 / React 19 / Zustand | 0 (no change) |
 ---
 
 ## What makes a good case study here
