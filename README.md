@@ -6,6 +6,7 @@
 
 Native for **Claude Code** · Compatible with Codex CLI · Aider · Gemini CLI · Cursor · Windsurf · Continue
 
+[![tests](https://github.com/nuhin13/pattern-surgeon/actions/workflows/test.yml/badge.svg)](https://github.com/nuhin13/pattern-surgeon/actions/workflows/test.yml)
 [![npm version](https://img.shields.io/npm/v/@nuhin13/pattern-surgeon?color=crimson)](https://www.npmjs.com/package/@nuhin13/pattern-surgeon)
 [![license](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 [![claude-code](https://img.shields.io/badge/claude--code-plugin-5B21D8)](https://github.com/nuhin13/pattern-surgeon)
@@ -24,6 +25,86 @@ Native for **Claude Code** · Compatible with Codex CLI · Aider · Gemini CLI �
 ```
 
 **See it on real code →** [Case studies](docs/case-studies/) — production refactors with scoring matrices, before/after diffs, and verification.
+
+---
+
+## Install
+
+### Option 1 — npx (recommended, works on all versions)
+
+```bash
+npx @nuhin13/pattern-surgeon           # installs to ~/.claude/skills/
+npx @nuhin13/pattern-surgeon --project # installs to .claude/skills/ (current project only)
+```
+
+```bash
+npx @nuhin13/pattern-surgeon remove    # uninstall
+```
+
+Restart Claude Code after install. No other steps needed.
+
+### Option 2 — Claude Code plugin command
+
+> ⚠️ Known issue on Claude Code ≥ 2.1.149: `/plugin install` may fail with a "not a valid repository name" error. Use Option 1 (npx) if this happens.
+
+```
+/plugin marketplace add nuhin13/pattern-surgeon
+/plugin install pattern-surgeon
+```
+
+**Update:**
+```
+/plugin update pattern-surgeon
+```
+
+**Uninstall:**
+```
+/plugin remove pattern-surgeon
+```
+
+### Option 3 — shell one-liner (no Node required)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nuhin13/pattern-surgeon/main/install.sh | bash
+```
+
+Project-local (commit to git so your team gets it):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nuhin13/pattern-surgeon/main/install.sh | bash -s -- --project
+git add .claude/skills/pattern-surgeon && git commit -m "add pattern-surgeon skill"
+```
+
+### Option 4 — npm global
+
+```bash
+npm install -g @nuhin13/pattern-surgeon
+```
+
+### Option 5 — clone (zero install for contributors)
+
+```bash
+git clone https://github.com/nuhin13/pattern-surgeon
+```
+
+`.claude/skills/pattern-surgeon` is already a symlink to `skills/pattern-surgeon/`.
+Claude Code picks it up automatically — no install step.
+
+---
+
+## Troubleshooting
+
+**`/plugin install` fails with "not a valid repository name" (Claude Code ≥ 2.1.149)**
+
+This is a known Claude Code regression. Use `npx @nuhin13/pattern-surgeon` instead — it installs the same skill files directly to `~/.claude/skills/` without going through the plugin system.
+
+**Skill not activating after install**
+
+Restart Claude Code (quit and reopen, or start a new session). Skills are loaded at session start.
+
+**`npx` gives a 404**
+
+Your npm cache may be stale. Run: `npx --yes @nuhin13/pattern-surgeon`
 
 ---
 
@@ -81,68 +162,15 @@ bats tests/scripts/                          # run all 8 test suites
 
 ---
 
-## Install
+## Real-world accuracy
 
-### Option 1 — Claude Code plugin
+Want proof this isn't a toy? Read [`docs/case-studies/`](docs/case-studies/) — real
+production refactors driven by the skill, with the full compare-mode scoring
+matrix (including which patterns were **rejected** and why), before/after code,
+LOC delta, and verification steps.
 
-In a Claude Code session, run these two commands:
-
-```
-/plugin marketplace add nuhin13/pattern-surgeon
-/plugin install pattern-surgeon
-```
-
-The skill activates automatically from its description — no slash command needed.
-
-**Update:**
-```
-/plugin update pattern-surgeon
-```
-
-**Uninstall:**
-```
-/plugin remove pattern-surgeon
-```
-
-### Option 2 — npx (no Node project required)
-
-```bash
-npx @nuhin13/pattern-surgeon           # installs to ~/.claude/skills/
-npx @nuhin13/pattern-surgeon --project # installs to .claude/skills/ (current project only)
-```
-
-```bash
-npx @nuhin13/pattern-surgeon remove           # uninstall global
-npx @nuhin13/pattern-surgeon remove --project # uninstall project-local
-```
-
-### Option 3 — npm global
-
-```bash
-npm install -g @nuhin13/pattern-surgeon
-```
-
-### Option 4 — shell one-liner
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/nuhin13/pattern-surgeon/main/install.sh | bash
-```
-
-Project-local (commit to git so your team gets it):
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/nuhin13/pattern-surgeon/main/install.sh | bash -s -- --project
-git add .claude/skills/pattern-surgeon && git commit -m "add pattern-surgeon skill"
-```
-
-### Option 5 — clone (zero install for contributors)
-
-```bash
-git clone https://github.com/nuhin13/pattern-surgeon
-```
-
-`.claude/skills/pattern-surgeon` is already a symlink to `skills/pattern-surgeon/`.
-Claude Code picks it up automatically — no install step.
+Current case studies:
+- [**01 — Interview microservice (Python / FastAPI / gRPC)**](docs/case-studies/01-interview-module-strategy.md) — Strategy pattern (compare-mode 9/10). Replaced a 3-branch if/elif quality router + baked-in heuristic evaluator with a Protocol + Enum + Strategy registry. Public API unchanged. ~-20 LOC net. LLM-evaluator swap reduced to 1 line at composition root. Skill explicitly rejected Factory (7/10), Repository (6/10), and DI (5/10) with stated reasons.
 
 ---
 
@@ -235,20 +263,7 @@ All pattern reference files, skill instructions, and safety scripts are plain
 Markdown and bash — readable and auditable by anyone.
 
 Have you used pattern-surgeon on a real refactor? Open a PR to add a case study
-under [`docs/case-studies/`](docs/case-studies/). Format guide is in that
-folder's README.
-
----
-
-## Real-world accuracy
-
-Want proof this isn't a toy? Read [`docs/case-studies/`](docs/case-studies/) — real
-production refactors driven by the skill, with the full compare-mode scoring
-matrix (including which patterns were **rejected** and why), before/after code,
-LOC delta, and verification steps.
-
-Current case studies:
-- [**01 — Interview microservice (Python / FastAPI / gRPC)**](docs/case-studies/01-interview-module-strategy.md) — Strategy pattern (compare-mode 9/10). Replaced a 3-branch if/elif quality router + baked-in heuristic evaluator with a Protocol + Enum + Strategy registry. Public API unchanged. ~-20 LOC net. LLM-evaluator swap reduced to 1 line at composition root. Skill explicitly rejected Factory (7/10), Repository (6/10), and DI (5/10) with stated reasons.
+under [`docs/case-studies/`](docs/case-studies/). Format guide is in that folder's README.
 
 ---
 
@@ -256,3 +271,4 @@ Current case studies:
 
 - Full usage guide with worked examples: [`USAGE.md`](USAGE.md)
 - Cross-CLI (Codex, Cursor, Aider, Gemini, Windsurf, Continue): [`docs/CROSS-CLI.md`](docs/CROSS-CLI.md)
+- Case studies (real production refactors): [`docs/case-studies/`](docs/case-studies/)
