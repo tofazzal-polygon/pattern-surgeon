@@ -251,6 +251,11 @@ LOC delta, and verification steps.
 Current case studies:
 - [**01 — Interview microservice (Python / FastAPI / gRPC)**](docs/case-studies/01-interview-module-strategy.md) — Strategy pattern (compare-mode 9/10). Replaced a 3-branch if/elif quality router + baked-in heuristic evaluator with a Protocol + Enum + Strategy registry. Public API unchanged. ~-20 LOC net. LLM-evaluator swap reduced to 1 line at composition root. Skill explicitly rejected Factory (7/10), Repository (6/10), and DI (5/10) with stated reasons.
 
+  - [**02 — A Next.js editor route (TypeScript / Next.js 16 / React 19 / Zustand)**](docs/case-studies/02-editor-route-suppression.md) — No pattern applied: all 6 detection rules
+  correctly suppressed. Implementation already conformed to Strategy (tab lookup), Repository (service-layer-backed actions), DI (React Context), and Observer (Zustand reactivity).
+  One Strategy near-miss recorded as a watchpoint (2-kind discriminator across 6 sites — pattern-surgeon's ≥3-case rule held). Also documents an LLM-agent depth-discipline failure
+  mode: shallow first pass (4/55 files), silent scope narrowing, two user pushbacks before coverage gap surfaced.
+
 ---
 
 ## Docs
